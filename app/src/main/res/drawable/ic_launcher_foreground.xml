@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Charging Bolt & Plug Symbol -->
+    <group
+        android:translateX="18"
+        android:translateY="18">
+        <!-- EV Battery Outline -->
+        <path
+            android:fillColor="#8B5CF6"
+            android:pathData="M14,16 L54,16 C57.3,16 60,18.7 60,22 L60,28 L64,28 C65.1,28 66,28.9 66,30 L66,42 C66,43.1 65.1,44 64,44 L60,44 L60,50 C60,53.3 57.3,56 54,56 L14,56 C10.7,56 8,53.3 8,50 L8,22 C8,18.7 10.7,16 14,16 Z" />
+        <!-- Inner Flash / Lightning Bolt -->
+        <path
+            android:fillColor="#10B981"
+            android:pathData="M37,22 L24,40 L34,40 L31,52 L46,34 L36,34 Z" />
+    </group>
+</vector>

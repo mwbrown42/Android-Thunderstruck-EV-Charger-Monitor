@@ -1,0 +1,817 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/chargingtable"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000"
+    android:padding="8dp">
+
+    <!-- Top Status & Mode Bar -->
+    <LinearLayout
+        android:id="@+id/charging_header_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#111827"
+        android:padding="8dp"
+        android:layout_marginBottom="5dp">
+
+        <TextView
+            android:id="@+id/title_gateway_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚡ EVCC Gateway"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="12dp" />
+
+        <Button
+            android:id="@+id/btn_sim_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="🧪 SIMULATOR: ON"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:background="#8B5CF6"
+            android:paddingHorizontal="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_evcc_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="State: CHARGE"
+            android:textColor="#10B981"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_j1772_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="J1772: LOCKED"
+            android:textColor="#38BDF8"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_gateway_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Offline"
+            android:textColor="#EF4444"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_governor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🛡️ Gov: OPTIMAL"
+            android:textColor="#10B981"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_charge_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏱️ 00:00:00"
+            android:textColor="#FBBF24"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Quick Momentary Buttons in Header -->
+        <Button
+            android:id="@+id/btn_show_status"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Show"
+            android:textSize="12sp"
+            android:background="#1E293B"
+            android:textColor="#93C5FD"
+            android:paddingHorizontal="10dp"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btn_show_config"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Config"
+            android:textSize="12sp"
+            android:background="#1E293B"
+            android:textColor="#93C5FD"
+            android:paddingHorizontal="10dp"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btn_show_history"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="History"
+            android:textSize="12sp"
+            android:background="#1E293B"
+            android:textColor="#93C5FD"
+            android:paddingHorizontal="10dp"
+            android:layout_marginEnd="6dp" />
+
+        <Button
+            android:id="@+id/btn_reset_graph"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:text="Reset Graph"
+            android:textSize="12sp"
+            android:background="#1E293B"
+            android:textColor="#9CA3AF"
+            android:paddingHorizontal="10dp" />
+    </LinearLayout>
+    <!-- Main Body: Scrollable Vertical Layout with Cards -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Thermal Derating Alert Banner (Compact) -->
+            <LinearLayout
+                android:id="@+id/banner_thermal_derate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="#5A1010"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/banner_derate_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⚠️"
+                    android:textSize="13sp"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/banner_derate_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Governor Derated:"
+                    android:textColor="#FCA5A5"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:layout_marginEnd="6dp" />
+
+                <TextView
+                    android:id="@+id/banner_derate_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Current throttled to protect chargers from overheating."
+                    android:textColor="#FEE2E2"
+                    android:textSize="10sp"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+
+                <Button
+                    android:id="@+id/btn_dismiss_derate_banner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:text="Dismiss"
+                    android:textSize="9sp"
+                    android:background="#991B1B"
+                    android:textColor="#FFFFFF"
+                    android:paddingHorizontal="6dp" />
+            </LinearLayout>
+
+            <!-- Dual Charger Cards Grid -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="5dp">
+
+                <!-- Charger 1 Card -->
+                <LinearLayout
+                    android:id="@+id/card_charger1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#111827"
+                    android:padding="10dp"
+                    android:layout_marginEnd="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/c1_title_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⚡ Charger 1 (tsm2500)"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/c1_tag_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" ID 40 "
+                            android:textColor="#06B6D4"
+                            android:textSize="12sp"
+                            android:background="#1F293D"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginStart="8dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/c1_status_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="STANDBY"
+                            android:textColor="#9CA3AF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="#1F293D"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <!-- Metrics Grid -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp">
+
+                        <LinearLayout
+                            android:id="@+id/c1_box_v"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c1_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c1_box_a"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c1_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c1_box_w"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c1_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c1_box_wh"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c1_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c1_box_tmp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center">
+                            <TextView android:id="@+id/c1_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c1_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Fault Status Matrix -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/c1_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c1_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c1_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c1_fault_not_charging" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="not chg" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c1_fault_input_voltage_err" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="input err" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c1_fault_pack_voltage_err" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="pack err" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" />
+                    </LinearLayout>
+
+                    <!-- Live Dynamic Chart (128V - 150V) -->
+                    <com.thunderstruck.evcc.monitor.view.ChargingChartView
+                        android:id="@+id/c1_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp" />
+                </LinearLayout>
+
+                <!-- Charger 2 Card -->
+                <LinearLayout
+                    android:id="@+id/card_charger2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#111827"
+                    android:padding="10dp"
+                    android:layout_marginStart="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/c2_title_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⚡ Charger 2 (tsm2500_41)"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/c2_tag_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" ID 41 "
+                            android:textColor="#10B981"
+                            android:textSize="12sp"
+                            android:background="#1F293D"
+                            android:paddingHorizontal="6dp"
+                            android:paddingVertical="2dp"
+                            android:layout_marginStart="8dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:id="@+id/c2_status_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="STANDBY"
+                            android:textColor="#9CA3AF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:background="#1F293D"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="3dp" />
+                    </LinearLayout>
+
+                    <!-- Metrics Grid -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="5dp">
+
+                        <LinearLayout
+                            android:id="@+id/c2_box_v"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c2_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c2_box_a"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c2_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c2_box_w"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c2_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c2_box_wh"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center"
+                            android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c2_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/c2_box_tmp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="#1F293D"
+                            android:padding="4dp"
+                            android:gravity="center">
+                            <TextView android:id="@+id/c2_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
+                            <TextView android:id="@+id/c2_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Fault Status Matrix -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+                        <TextView android:id="@+id/c2_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c2_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c2_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c2_fault_not_charging" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="not chg" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c2_fault_input_voltage_err" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="input err" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
+                        <TextView android:id="@+id/c2_fault_pack_voltage_err" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="pack err" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" />
+                    </LinearLayout>
+
+                    <!-- Live Dynamic Chart (128V - 150V) -->
+                    <com.thunderstruck.evcc.monitor.view.ChargingChartView
+                        android:id="@+id/c2_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Simulator Presets & Controls Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_marginBottom="5dp">
+
+                <!-- Scenario Presets & Fault Injectors (Two Rows of Buttons, Height Matched) -->
+                <LinearLayout
+                    android:id="@+id/card_sim_presets"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical"
+                    android:background="#18152B"
+                    android:padding="8dp"
+                    android:layout_marginEnd="4dp">
+
+                    <TextView
+                        android:id="@+id/title_sim_presets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🧪 Scenario Presets"
+                        android:textColor="#C4B5FD"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Row 1 of Presets (4 buttons) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="4dp">
+                        <Button android:id="@+id/sc_btn_0" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Dual Chg" android:textSize="10sp" android:textColor="#FFF" android:background="#8B5CF6" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_1" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Single Chg" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_2" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="CV Taper" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_3" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Overtemp" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" />
+                    </LinearLayout>
+
+                    <!-- Row 2 of Presets (4 buttons) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="6dp">
+                        <Button android:id="@+id/sc_btn_4" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="CAN RxErr" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_5" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Input Err" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_6" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Pack Err" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/sc_btn_7" android:layout_width="0dp" android:layout_height="32dp" android:layout_weight="1" android:text="Standby" android:textSize="10sp" android:textColor="#E2E8F0" android:background="#1F223A" android:paddingHorizontal="2dp" />
+                    </LinearLayout>
+
+                    <!-- Interactive Live Slider Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+                        <TextView android:id="@+id/lbl_sim_c1_v_title" android:layout_width="75dp" android:layout_height="wrap_content" android:text="C1 Voltage:" android:textColor="#9CA3AF" android:textSize="11sp" />
+                        <SeekBar android:id="@+id/sim_seek_c1_v" android:layout_width="0dp" android:layout_height="28dp" android:layout_weight="1" android:max="160" android:progress="142" />
+                        <TextView android:id="@+id/sim_lbl_c1_v" android:layout_width="50dp" android:layout_height="wrap_content" android:text="142.0V" android:textColor="#FFF" android:textSize="11sp" android:gravity="end" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView android:id="@+id/lbl_sim_c1_a_title" android:layout_width="75dp" android:layout_height="wrap_content" android:text="C1 Current:" android:textColor="#9CA3AF" android:textSize="11sp" />
+                        <SeekBar android:id="@+id/sim_seek_c1_a" android:layout_width="0dp" android:layout_height="28dp" android:layout_weight="1" android:max="40" android:progress="22" />
+                        <TextView android:id="@+id/sim_lbl_c1_a" android:layout_width="50dp" android:layout_height="wrap_content" android:text="22.0A" android:textColor="#FFF" android:textSize="11sp" android:gravity="end" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Temperature Histogram (Charger 1 & Charger 2) -->
+                <LinearLayout
+                    android:id="@+id/card_temp_chart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.2"
+                    android:orientation="vertical"
+                    android:background="#0F172A"
+                    android:padding="8dp"
+                    android:layout_marginHorizontal="4dp">
+
+                    <TextView
+                        android:id="@+id/title_temp_chart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌡️ Temperature History (°C)"
+                        android:textColor="#F59E0B"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <com.thunderstruck.evcc.monitor.view.TemperatureChartView
+                        android:id="@+id/chart_temperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="138dp" />
+                </LinearLayout>
+
+                <!-- Parameter Setters & Traces -->
+                <LinearLayout
+                    android:id="@+id/card_params_traces"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:orientation="vertical"
+                    android:background="#111827"
+                    android:padding="8dp"
+                    android:layout_marginStart="4dp">
+
+                    <TextView
+                        android:id="@+id/title_params_traces"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚙️ Parameters &amp; Traces"
+                        android:textColor="#9CA3AF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <!-- Trace Buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+                        <Button android:id="@+id/btn_trace_can" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="Tr CAN" android:textSize="12sp" android:background="#1F293D" android:textColor="#FFF" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/btn_trace_state" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="Tr State" android:textSize="12sp" android:background="#1F293D" android:textColor="#FFF" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/btn_trace_charger" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="Tr Chg" android:textSize="12sp" android:background="#1F293D" android:textColor="#FFF" android:layout_marginEnd="3dp" />
+                        <Button android:id="@+id/btn_trace_off" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="Tr Off" android:textSize="12sp" android:background="#1F293D" android:textColor="#FFF" />
+                    </LinearLayout>
+
+                    <!-- Parameter Set Rows -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
+                        <TextView android:id="@+id/lbl_maxv_param" android:layout_width="60dp" android:layout_height="wrap_content" android:text="MaxV:" android:textColor="#9CA3AF" android:textSize="13sp" />
+                        <EditText android:id="@+id/inp_maxv" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="134.4" android:textSize="13sp" android:textColor="#FFF" android:background="#090D16" android:padding="6dp" android:inputType="numberDecimal" />
+                        <Button android:id="@+id/btn_set_maxv" android:layout_width="56dp" android:layout_height="36dp" android:text="Set" android:textSize="12sp" android:background="#06B6D4" android:textColor="#000" android:layout_marginStart="6dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView android:id="@+id/lbl_maxc_param" android:layout_width="60dp" android:layout_height="wrap_content" android:text="MaxC:" android:textColor="#9CA3AF" android:textSize="13sp" />
+                        <EditText android:id="@+id/inp_maxc" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="20.0" android:textSize="13sp" android:textColor="#FFF" android:background="#090D16" android:padding="6dp" android:inputType="numberDecimal" />
+                        <Button android:id="@+id/btn_set_maxc" android:layout_width="56dp" android:layout_height="36dp" android:text="Set" android:textSize="12sp" android:background="#06B6D4" android:textColor="#000" android:layout_marginStart="6dp" />
+                    </LinearLayout>
+
+                    <!-- Auto Thermal Governor Setting Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="6dp"
+                        android:paddingTop="6dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/lbl_governor_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🌡️ Auto Governor"
+                                android:textColor="#E5E7EB"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/lbl_governor_detail"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Active: 20.0A (100%)"
+                                android:textColor="#9CA3AF"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/switch_governor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Raw Terminal Card -->
+            <LinearLayout
+                android:id="@+id/card_terminal"
+                android:layout_width="match_parent"
+                android:layout_height="165dp"
+                android:orientation="vertical"
+                android:background="#090D16"
+                android:padding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+                    <TextView
+                        android:id="@+id/title_terminal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📟 EVCC Serial Data Stream (9600 Baud)"
+                        android:textColor="#9CA3AF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                    <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+                    <Button android:id="@+id/btn_diag_usb" android:layout_width="wrap_content" android:layout_height="28dp" android:text="🔌 USB Diag" android:textSize="11sp" android:background="#1E293B" android:textColor="#38BDF8" android:paddingHorizontal="10dp" android:layout_marginEnd="6dp" />
+                    <Button android:id="@+id/btn_view_evcc_log" android:layout_width="wrap_content" android:layout_height="28dp" android:text="📜 Log" android:textSize="11sp" android:background="#1E293B" android:textColor="#A78BFA" android:paddingHorizontal="10dp" android:layout_marginEnd="6dp" />
+                    <Button android:id="@+id/btn_clear_terminal" android:layout_width="wrap_content" android:layout_height="28dp" android:text="Clear" android:textSize="11sp" android:background="#1E293B" android:textColor="#9CA3AF" android:paddingHorizontal="10dp" />
+                </LinearLayout>
+
+                <ScrollView
+                    android:id="@+id/term_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="#030712"
+                    android:padding="6dp">
+                    <TextView
+                        android:id="@+id/term_log_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#38BDF8"
+                        android:textSize="12sp"
+                        android:typeface="monospace" />
+                </ScrollView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp">
+                    <EditText
+                        android:id="@+id/term_input"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:hint="Type EVCC command (e.g. show, show config, help)..."
+                        android:textColorHint="#4B5563"
+                        android:textColor="#38BDF8"
+                        android:textSize="12sp"
+                        android:typeface="monospace"
+                        android:background="#030712"
+                        android:padding="6dp" />
+                    <Button
+                        android:id="@+id/btn_term_send"
+                        android:layout_width="70dp"
+                        android:layout_height="36dp"
+                        android:text="Send"
+                        android:textSize="12sp"
+                        android:background="#06B6D4"
+                        android:textColor="#000"
+                        android:layout_marginStart="6dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

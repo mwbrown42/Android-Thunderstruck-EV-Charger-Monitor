@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Thunderstruck EV Charger Monitor</string>
+    <string name="settings_title">Settings</string>
+    <string name="evcc_settings">Thunderstruck EV Charge Controller Gateway Settings</string>
+    <string name="evcc_enable_title">Enable EVCC Gateway</string>
+    <string name="evcc_enable_summary">Listen for EVCC broadcast telemetry and connect to gateway</string>
+    <string name="evcc_autoconnect_title">Auto-Connect on Charging</string>
+    <string name="evcc_autoconnect_summary">Automatically connect and switch to live monitoring when charge signal is detected</string>
+</resources>
