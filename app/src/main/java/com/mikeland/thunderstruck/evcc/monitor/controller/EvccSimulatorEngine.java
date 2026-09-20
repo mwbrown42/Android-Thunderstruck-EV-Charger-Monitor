@@ -1,14 +1,11 @@
-package com.thunderstruck.evcc.monitor.controller;
+package com.mikeland.thunderstruck.evcc.monitor.controller;
 
-import android.os.Handler;
-import android.os.Looper;
-import com.thunderstruck.evcc.monitor.model.EvccTelemetry;
-import com.thunderstruck.evcc.monitor.model.ChargerTelemetry;
+import com.mikeland.thunderstruck.evcc.monitor.model.EvccTelemetry;
+import com.mikeland.thunderstruck.evcc.monitor.model.ChargerTelemetry;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,13 +13,13 @@ import java.util.concurrent.TimeUnit;
 public class EvccSimulatorEngine {
 
     public enum Scenario {
-        DUAL_CHARGE(0, "Dual Charge (18A ea)"),
-        SINGLE_CHARGE(1, "Single Charger"),
-        TAPERING(2, "CV Tapering Phase"),
-        OVERTEMP_FAULT(3, "Overtemp Fault"),
-        CAN_RXERR(4, "CAN RX Error"),
-        INPUT_VOLTAGE_ERR(5, "Input Volt Err"),
-        PACK_VOLTAGE_ERR(6, "Pack Volt Err"),
+        QUAD_CHARGE(0, "Quad (4 Chg)"),
+        DUAL_CHARGE(1, "Dual (2 Chg)"),
+        SINGLE_CHARGE(2, "Single (1 Chg)"),
+        TAPERING(3, "CV Taper"),
+        OVERTEMP_FAULT(4, "Overtemp (>=60°C)"),
+        CAN_RXERR(5, "CAN RxErr"),
+        VOLT_ERR(6, "Volt Err"),
         STANDBY(7, "Standby Mode");
 
         public final int id;
@@ -41,12 +38,12 @@ public class EvccSimulatorEngine {
     private volatile boolean isRunning = false;
     private SimulatorListener listener;
 
-    private Scenario currentScenario = Scenario.DUAL_CHARGE;
+    private Scenario currentScenario = Scenario.QUAD_CHARGE;
     private final EvccTelemetry telemetry = new EvccTelemetry();
 
-    // Tunable parameters (matching EVCC defaults for 128-150V pack)
+    // Tunable parameters (matching EVCC defaults for 128-150V pack, up to 4 chargers)
     private float maxv = 148.0f;
-    private float maxc = 20.0f;
+    private float maxc = 80.0f;
     private float termc = 1.5f;
 
     // Simulation accumulator physics
@@ -61,7 +58,7 @@ public class EvccSimulatorEngine {
     }
 
     private EvccSimulatorEngine() {
-        applyScenario(Scenario.DUAL_CHARGE);
+        applyScenario(Scenario.QUAD_CHARGE);
     }
 
     public void setListener(SimulatorListener listener) {
@@ -108,67 +105,89 @@ public class EvccSimulatorEngine {
 
     public void applyScenario(Scenario scenario) {
         this.currentScenario = scenario;
-        ChargerTelemetry c1 = telemetry.charger1;
-        ChargerTelemetry c2 = telemetry.charger2;
 
-        c1.rxerr = false; c1.hwfail = false; c1.overtemp = false;
-        c1.notCharging = false; c1.inputVoltageErr = false; c1.packVoltageErr = false;
-        c2.rxerr = false; c2.hwfail = false; c2.overtemp = false;
-        c2.notCharging = false; c2.inputVoltageErr = false; c2.packVoltageErr = false;
+        // Reset all 4 chargers to safe baseline
+        for (int i = 0; i < 4; i++) {
+            ChargerTelemetry c = telemetry.getCharger(i);
+            c.rxerr = false; c.hwfail = false; c.overtemp = false;
+            c.notCharging = false; c.inputVoltageErr = false; c.packVoltageErr = false;
+            c.voltage = 0.0f; c.current = 0.0f; c.power = 0.0f; c.temperature = 22.0f;
+            c.active = false;
+        }
 
         switch (scenario) {
+            case QUAD_CHARGE:
+                telemetry.state = "CHARGE";
+                telemetry.j1772 = "LOCKED";
+                for (int i = 0; i < 4; i++) {
+                    ChargerTelemetry c = telemetry.getCharger(i);
+                    c.voltage = 142.0f;
+                    c.current = 20.0f;
+                    c.temperature = 38.0f + (i * 1.5f);
+                    c.active = true;
+                }
+                break;
+
             case DUAL_CHARGE:
                 telemetry.state = "CHARGE";
                 telemetry.j1772 = "LOCKED";
-                c1.voltage = 142.0f; c1.current = 22.0f; c1.temperature = 38.0f; c1.active = true;
-                c2.voltage = 142.0f; c2.current = 22.0f; c2.temperature = 39.0f; c2.active = true;
+                telemetry.charger1.voltage = 142.0f; telemetry.charger1.current = 20.0f;
+                telemetry.charger1.temperature = 38.0f; telemetry.charger1.active = true;
+                telemetry.charger2.voltage = 142.0f; telemetry.charger2.current = 20.0f;
+                telemetry.charger2.temperature = 39.0f; telemetry.charger2.active = true;
                 break;
+
             case SINGLE_CHARGE:
                 telemetry.state = "CHARGE";
                 telemetry.j1772 = "LOCKED";
-                c1.voltage = 142.0f; c1.current = 22.0f; c1.temperature = 36.0f; c1.active = true;
-                c2.voltage = 0.0f;   c2.current = 0.0f;  c2.temperature = 24.0f; c2.active = false;
+                telemetry.charger1.voltage = 142.0f; telemetry.charger1.current = 20.0f;
+                telemetry.charger1.temperature = 36.0f; telemetry.charger1.active = true;
                 break;
+
             case TAPERING:
                 telemetry.state = "CHARGE";
                 telemetry.j1772 = "LOCKED";
-                c1.voltage = 133.8f; c1.current = 4.2f;  c1.temperature = 44.0f; c1.active = true;
-                c2.voltage = 133.8f; c2.current = 4.1f;  c2.temperature = 45.0f; c2.active = true;
+                telemetry.charger1.voltage = 147.2f; telemetry.charger1.current = 4.2f;
+                telemetry.charger1.temperature = 44.0f; telemetry.charger1.active = true;
+                telemetry.charger2.voltage = 147.2f; telemetry.charger2.current = 4.1f;
+                telemetry.charger2.temperature = 45.0f; telemetry.charger2.active = true;
                 break;
+
             case OVERTEMP_FAULT:
                 telemetry.state = "FAULT";
                 telemetry.j1772 = "LOCKED";
-                c1.voltage = 124.0f; c1.current = 0.0f;  c1.temperature = 68.0f; c1.active = false; c1.overtemp = true;
-                c2.voltage = 124.0f; c2.current = 0.0f;  c2.temperature = 69.0f; c2.active = false; c2.overtemp = true;
+                telemetry.charger1.voltage = 135.0f; telemetry.charger1.current = 0.0f;
+                telemetry.charger1.temperature = 61.5f; telemetry.charger1.active = false; telemetry.charger1.overtemp = true;
+                telemetry.charger2.voltage = 135.0f; telemetry.charger2.current = 0.0f;
+                telemetry.charger2.temperature = 62.0f; telemetry.charger2.active = false; telemetry.charger2.overtemp = true;
                 break;
+
             case CAN_RXERR:
                 telemetry.state = "FAULT";
                 telemetry.j1772 = "LOCKED";
-                c1.voltage = 120.0f; c1.current = 0.0f;  c1.temperature = 35.0f; c1.active = false; c1.rxerr = true;
-                c2.voltage = 120.0f; c2.current = 0.0f;  c2.temperature = 35.0f; c2.active = false; c2.rxerr = true;
+                telemetry.charger1.voltage = 120.0f; telemetry.charger1.current = 0.0f;
+                telemetry.charger1.temperature = 35.0f; telemetry.charger1.active = false; telemetry.charger1.rxerr = true;
+                telemetry.charger2.voltage = 120.0f; telemetry.charger2.current = 0.0f;
+                telemetry.charger2.temperature = 35.0f; telemetry.charger2.active = false; telemetry.charger2.rxerr = true;
                 break;
-            case INPUT_VOLTAGE_ERR:
+
+            case VOLT_ERR:
                 telemetry.state = "FAULT";
                 telemetry.j1772 = "CONNECTED";
-                c1.voltage = 0.0f;   c1.current = 0.0f;  c1.temperature = 28.0f; c1.active = false; c1.inputVoltageErr = true;
-                c2.voltage = 0.0f;   c2.current = 0.0f;  c2.temperature = 28.0f; c2.active = false; c2.inputVoltageErr = true;
+                telemetry.charger1.temperature = 28.0f; telemetry.charger1.inputVoltageErr = true;
+                telemetry.charger2.temperature = 28.0f; telemetry.charger2.packVoltageErr = true;
                 break;
-            case PACK_VOLTAGE_ERR:
-                telemetry.state = "FAULT";
-                telemetry.j1772 = "LOCKED";
-                c1.voltage = 142.0f; c1.current = 0.0f;  c1.temperature = 34.0f; c1.active = false; c1.packVoltageErr = true;
-                c2.voltage = 142.0f; c2.current = 0.0f;  c2.temperature = 34.0f; c2.active = false; c2.packVoltageErr = true;
-                break;
+
             case STANDBY:
                 telemetry.state = "STANDBY";
                 telemetry.j1772 = "DISCONNECTED";
-                c1.voltage = 0.0f;   c1.current = 0.0f;  c1.temperature = 22.0f; c1.active = false;
-                c2.voltage = 0.0f;   c2.current = 0.0f;  c2.temperature = 22.0f; c2.active = false;
                 break;
         }
 
-        c1.power = c1.voltage * c1.current;
-        c2.power = c2.voltage * c2.current;
+        for (int i = 0; i < 4; i++) {
+            ChargerTelemetry c = telemetry.getCharger(i);
+            c.power = c.voltage * c.current;
+        }
 
         updateSimulatedGovernor();
 
@@ -196,37 +215,50 @@ public class EvccSimulatorEngine {
             return;
         }
 
-        float maxT = Math.max(telemetry.charger1.temperature, telemetry.charger2.temperature);
-        String hottest = (telemetry.charger1.temperature >= telemetry.charger2.temperature) ? "tsm2500" : "tsm2500_41";
+        float maxT = 0.0f;
+        String hottest = "tsm2500";
+        for (int i = 0; i < 4; i++) {
+            ChargerTelemetry c = telemetry.getCharger(i);
+            if (c != null && (c.active || c.temperature > maxT)) {
+                if (c.temperature > maxT) {
+                    maxT = c.temperature;
+                    hottest = c.name;
+                }
+            }
+        }
+        if (maxT == 0.0f) maxT = telemetry.charger1.temperature;
+
         telemetry.governor.peakTemp = maxT;
         telemetry.governor.hottestCharger = hottest;
         telemetry.governor.baselineMaxc = maxc;
 
-        if (maxT >= 63.0f) {
+        // Thunderstruck EVCC trips charging hard at 60°C.
+        // Governor aggressively throttles between 50°C and 59°C to guarantee heatsink stays under 60°C.
+        if (maxT >= 60.0f) {
             telemetry.governor.isDerated = true;
-            telemetry.governor.deratePercent = 30;
-            telemetry.governor.activeMaxc = Math.max(6.0f, maxc * 0.30f);
-            telemetry.governor.statusText = "Emergency Derate (Peak >= 63Â°C)";
-        } else if (maxT >= 60.0f) {
-            telemetry.governor.isDerated = true;
-            telemetry.governor.deratePercent = 50;
-            telemetry.governor.activeMaxc = Math.max(6.0f, maxc * 0.50f);
-            telemetry.governor.statusText = "Heavy Derate (Peak 60-62Â°C)";
+            telemetry.governor.deratePercent = 0;
+            telemetry.governor.activeMaxc = 0.0f;
+            telemetry.governor.statusText = "HARD TRIP (>= 60°C Cutoff)";
         } else if (maxT >= 57.0f) {
+            telemetry.governor.isDerated = true;
+            telemetry.governor.deratePercent = 40;
+            telemetry.governor.activeMaxc = Math.max(4.0f, maxc * 0.40f);
+            telemetry.governor.statusText = "Heavy Derate (57-59°C)";
+        } else if (maxT >= 54.0f) {
             telemetry.governor.isDerated = true;
             telemetry.governor.deratePercent = 70;
             telemetry.governor.activeMaxc = Math.max(6.0f, maxc * 0.70f);
-            telemetry.governor.statusText = "Moderate Derate (Peak 57-59Â°C)";
-        } else if (maxT >= 53.0f) {
+            telemetry.governor.statusText = "Moderate Derate (54-56°C)";
+        } else if (maxT >= 50.0f) {
             telemetry.governor.isDerated = true;
             telemetry.governor.deratePercent = 85;
-            telemetry.governor.activeMaxc = Math.max(6.0f, maxc * 0.85f);
-            telemetry.governor.statusText = "Warning Derate (Peak 53-56Â°C)";
+            telemetry.governor.activeMaxc = Math.max(8.0f, maxc * 0.85f);
+            telemetry.governor.statusText = "Warning Derate (50-53°C)";
         } else {
             telemetry.governor.isDerated = false;
             telemetry.governor.deratePercent = 100;
             telemetry.governor.activeMaxc = maxc;
-            telemetry.governor.statusText = "Optimal";
+            telemetry.governor.statusText = "Optimal (<50°C)";
         }
     }
 
@@ -239,7 +271,11 @@ public class EvccSimulatorEngine {
     }
 
     public void setChargerValues(int chargerId, float v, float a, float tmp) {
-        ChargerTelemetry c = (chargerId == 40 || chargerId == 1) ? telemetry.charger1 : telemetry.charger2;
+        int idx = 0;
+        if (chargerId >= 40 && chargerId <= 43) idx = chargerId - 40;
+        else if (chargerId >= 1 && chargerId <= 4) idx = chargerId - 1;
+
+        ChargerTelemetry c = telemetry.getCharger(idx);
         c.voltage = v;
         c.current = a;
         c.temperature = tmp;
@@ -250,7 +286,11 @@ public class EvccSimulatorEngine {
     }
 
     public void setChargerFault(int chargerId, String faultKey, boolean value) {
-        ChargerTelemetry c = (chargerId == 40 || chargerId == 1) ? telemetry.charger1 : telemetry.charger2;
+        int idx = 0;
+        if (chargerId >= 40 && chargerId <= 43) idx = chargerId - 40;
+        else if (chargerId >= 1 && chargerId <= 4) idx = chargerId - 1;
+
+        ChargerTelemetry c = telemetry.getCharger(idx);
         if ("rxerr".equalsIgnoreCase(faultKey)) c.rxerr = value;
         else if ("hwfail".equalsIgnoreCase(faultKey)) c.hwfail = value;
         else if ("overtemp".equalsIgnoreCase(faultKey)) c.overtemp = value;
@@ -275,32 +315,54 @@ public class EvccSimulatorEngine {
 
         String lower = cmd.toLowerCase(Locale.US);
         if (lower.equals("show") || lower.equals("show status")) {
-            String resp = String.format(Locale.US,
-                "--- EVCC STATUS ---\nState: %s\nJ1772: %s\nChargers: 2 detected\nTSM2500 #1 (ID 40): %.1fV, %.1fA, %.0fW, %.1fWh, %.0fC\nTSM2500 #2 (ID 41): %.1fV, %.1fA, %.0fW, %.1fWh, %.0fC\nMaxV: %.1fV | MaxC: %.1fA | TermC: %.1fA\n",
-                telemetry.state, telemetry.j1772,
-                telemetry.charger1.voltage, telemetry.charger1.current, telemetry.charger1.power, telemetry.charger1.wattHours, telemetry.charger1.temperature,
-                telemetry.charger2.voltage, telemetry.charger2.current, telemetry.charger2.power, telemetry.charger2.wattHours, telemetry.charger2.temperature,
-                maxv, maxc, termc);
+            StringBuilder sb = new StringBuilder();
+            sb.append("--- EVCC STATUS ---\n");
+            sb.append("State: ").append(telemetry.state).append("\n");
+            sb.append("J1772: ").append(telemetry.j1772).append("\n");
+            int activeCount = telemetry.getActiveChargerCount();
+            sb.append("Chargers: ").append(activeCount).append(" detected\n");
+            for (int i = 0; i < activeCount; i++) {
+                ChargerTelemetry c = telemetry.getCharger(i);
+                sb.append(String.format(Locale.US, "TSM2500 #%d (ID %d): %.1fV, %.1fA, %.0fW, %.1fWh, %.0fC\n",
+                    i + 1, c.id, c.voltage, c.current, c.power, c.wattHours, c.temperature));
+            }
+            sb.append(String.format(Locale.US, "MaxV: %.1fV | MaxC: %.1fA | TermC: %.1fA\n", maxv, maxc, termc));
+            String resp = sb.toString();
             if (listener != null) {
                 listener.onRawLineEmitted(resp, false);
                 listener.onQueryResponse("SHOW", resp);
             }
         } else if (lower.equals("show config")) {
-            String resp = String.format(Locale.US,
-                "--- EVCC CONFIGURATION ---\nProtocol: CAN 2.0B 250kbps / TSM2500\nCharger 1 ID: 40 (0x28)\nCharger 2 ID: 41 (0x29)\nmaxv: %.1f V\nmaxc: %.1f A\ntermc: %.1f A\ntrace: can=%s state=%s charger=%s\n",
-                maxv, maxc, termc,
-                telemetry.traceCan ? "ON" : "OFF", telemetry.traceState ? "ON" : "OFF", telemetry.traceCharger ? "ON" : "OFF");
+            StringBuilder sb = new StringBuilder();
+            sb.append("--- EVCC CONFIGURATION ---\n");
+            sb.append("Protocol: CAN 2.0B 250kbps / TSM2500\n");
+            for (int i = 0; i < 4; i++) {
+                ChargerTelemetry c = telemetry.getCharger(i);
+                sb.append(String.format(Locale.US, "Charger %d ID: %d (0x%X)\n", i + 1, c.id, c.id));
+            }
+            sb.append(String.format(Locale.US, "maxv: %.1f V\nmaxc: %.1f A\ntermc: %.1f A\n", maxv, maxc, termc));
+            sb.append(String.format(Locale.US, "trace: can=%s state=%s charger=%s\n",
+                telemetry.traceCan ? "ON" : "OFF", telemetry.traceState ? "ON" : "OFF", telemetry.traceCharger ? "ON" : "OFF"));
+            String resp = sb.toString();
             if (listener != null) {
                 listener.onRawLineEmitted(resp, false);
                 listener.onQueryResponse("CONFIG", resp);
             }
         } else if (lower.equals("show history")) {
             String timeStr = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US).format(new Date());
-            String resp = String.format(Locale.US,
-                "--- CHARGE HISTORY LOG ---\nSession: %s\nC1 Energy: %.2f kWh | Peak V: %.1fV | Peak A: %.1fA\nC2 Energy: %.2f kWh | Peak V: %.1fV | Peak A: %.1fA\nTotal Wh Delivered: %.1f Wh\nStatus: NORMAL CHARGE COMPLETED\n",
-                timeStr, telemetry.charger1.wattHours / 1000f, telemetry.charger1.voltage, maxc,
-                telemetry.charger2.wattHours / 1000f, telemetry.charger2.voltage, maxc,
-                telemetry.charger1.wattHours + telemetry.charger2.wattHours);
+            StringBuilder sb = new StringBuilder();
+            sb.append("--- CHARGE HISTORY LOG ---\n");
+            sb.append("Session: ").append(timeStr).append("\n");
+            float totalWh = 0;
+            int activeCount = telemetry.getActiveChargerCount();
+            for (int i = 0; i < activeCount; i++) {
+                ChargerTelemetry c = telemetry.getCharger(i);
+                totalWh += c.wattHours;
+                sb.append(String.format(Locale.US, "C%d Energy: %.2f kWh | Peak V: %.1fV | Peak A: %.1fA\n",
+                    i + 1, c.wattHours / 1000f, c.voltage, maxc));
+            }
+            sb.append(String.format(Locale.US, "Total Wh Delivered: %.1f Wh\nStatus: NORMAL CHARGE COMPLETED\n", totalWh));
+            String resp = sb.toString();
             if (listener != null) {
                 listener.onRawLineEmitted(resp, false);
                 listener.onQueryResponse("HISTORY", resp);
@@ -345,51 +407,35 @@ public class EvccSimulatorEngine {
         lastTickTime = now;
         tickCounter++;
 
-        ChargerTelemetry c1 = telemetry.charger1;
-        ChargerTelemetry c2 = telemetry.charger2;
-
         if ("CHARGE".equals(telemetry.state)) {
-            // Dynamic charging physics: slow voltage rise
-            if (c1.active && !c1.hasAnyFault()) {
-                c1.voltage = Math.min(c1.voltage + 0.05f, maxv);
-                if (c1.voltage >= maxv - 2.0f) {
-                    // Taper current in CV stage
-                    float taperFactor = Math.max((maxv - c1.voltage) / 2.0f, 0.08f);
-                    c1.current = Math.max(maxc * taperFactor, termc);
+            for (int i = 0; i < 4; i++) {
+                ChargerTelemetry c = telemetry.getCharger(i);
+                if (c.active && !c.hasAnyFault()) {
+                    c.voltage = Math.min(c.voltage + 0.05f, maxv);
+                    if (c.voltage >= maxv - 2.0f) {
+                        float taperFactor = Math.max((maxv - c.voltage) / 2.0f, 0.08f);
+                        c.current = Math.max(maxc * taperFactor, termc);
+                    }
+                    c.power = c.voltage * c.current;
+                    c.wattHours += c.power * dtHours;
+                    if (c.temperature < 48.0f) c.temperature += 0.02f;
                 }
-                c1.power = c1.voltage * c1.current;
-                c1.wattHours += c1.power * dtHours;
-                if (c1.temperature < 48.0f) c1.temperature += 0.02f;
             }
 
-            if (c2.active && !c2.hasAnyFault()) {
-                c2.voltage = Math.min(c2.voltage + 0.05f, maxv);
-                if (c2.voltage >= maxv - 2.0f) {
-                    float taperFactor = Math.max((maxv - c2.voltage) / 2.0f, 0.08f);
-                    c2.current = Math.max(maxc * taperFactor, termc);
-                }
-                c2.power = c2.voltage * c2.current;
-                c2.wattHours += c2.power * dtHours;
-                if (c2.temperature < 48.0f) c2.temperature += 0.02f;
-            }
-
-            // Emit trace strings periodically if enabled
             if (listener != null) {
                 if (telemetry.traceCharger && tickCounter % 2 == 0) {
-                    if (c1.active) {
-                        listener.onRawLineEmitted(String.format(Locale.US,
-                            "tsm2500: V=%.1f, A=%.1f, W=%.0f, Wh=%.1f, TMP=%.0fC%s\n",
-                            c1.voltage, c1.current, c1.power, c1.wattHours, c1.temperature,
-                            c1.hasAnyFault() ? " [FAULT]" : ""), false);
-                    }
-                    if (c2.active) {
-                        listener.onRawLineEmitted(String.format(Locale.US,
-                            "tsm2500_41: V=%.1f, A=%.1f, W=%.0f, Wh=%.1f, TMP=%.0fC%s\n",
-                            c2.voltage, c2.current, c2.power, c2.wattHours, c2.temperature,
-                            c2.hasAnyFault() ? " [FAULT]" : ""), false);
+                    for (int i = 0; i < 4; i++) {
+                        ChargerTelemetry c = telemetry.getCharger(i);
+                        if (c.active) {
+                            listener.onRawLineEmitted(String.format(Locale.US,
+                                "%s: V=%.1f, A=%.1f, W=%.0f, Wh=%.1f, TMP=%.0fC%s\n",
+                                c.name, c.voltage, c.current, c.power, c.wattHours, c.temperature,
+                                c.hasAnyFault() ? " [FAULT]" : ""), false);
+                        }
                     }
                 }
                 if (telemetry.traceCan && tickCounter % 3 == 0) {
+                    ChargerTelemetry c1 = telemetry.charger1;
                     listener.onRawLineEmitted(String.format(Locale.US,
                         "can_rx: ID=0x18FF50E5 LEN=8 DATA=[%02X %02X %02X %02X %02X %02X %02X %02X]\n",
                         (int)(c1.voltage * 10) >> 8, (int)(c1.voltage * 10) & 0xFF,

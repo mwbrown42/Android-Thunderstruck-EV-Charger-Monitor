@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor;
+package com.mikeland.thunderstruck.evcc.monitor;
 
 import android.os.Bundle;
 import android.view.MenuItem;

@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor.model;
+package com.mikeland.thunderstruck.evcc.monitor.model;
 
 import org.json.JSONObject;
 
@@ -12,10 +12,30 @@ public class EvccTelemetry {
 
     public ChargerTelemetry charger1 = new ChargerTelemetry(40, "tsm2500");
     public ChargerTelemetry charger2 = new ChargerTelemetry(41, "tsm2500_41");
+    public ChargerTelemetry charger3 = new ChargerTelemetry(42, "tsm2500_42");
+    public ChargerTelemetry charger4 = new ChargerTelemetry(43, "tsm2500_43");
     public ThermalGovernorTelemetry governor = new ThermalGovernorTelemetry();
     public float maxv = 0.0f;
     public float maxc = 0.0f;
     public long sessionSec = 0;
+
+    public ChargerTelemetry getCharger(int index) {
+        switch (index) {
+            case 0: return charger1;
+            case 1: return charger2;
+            case 2: return charger3;
+            case 3: return charger4;
+            default: return charger1;
+        }
+    }
+
+    public int getActiveChargerCount() {
+        int count = 1;
+        if (charger4 != null && (charger4.active || charger4.current > 0.2f || charger4.voltage > 20.0f)) return 4;
+        if (charger3 != null && (charger3.active || charger3.current > 0.2f || charger3.voltage > 20.0f)) return 3;
+        if (charger2 != null && (charger2.active || charger2.current > 0.2f || charger2.voltage > 20.0f)) return 2;
+        return count;
+    }
 
     public void updateFromJson(JSONObject json) {
         if (json == null) return;
@@ -46,6 +66,23 @@ public class EvccTelemetry {
         JSONObject c2 = json.optJSONObject("c2");
         if (c2 != null) charger2.updateFromJson(c2);
 
+        JSONObject c3 = json.optJSONObject("c3");
+        if (c3 != null) charger3.updateFromJson(c3);
+
+        JSONObject c4 = json.optJSONObject("c4");
+        if (c4 != null) charger4.updateFromJson(c4);
+
+        // Also check if chargers array is sent
+        org.json.JSONArray arr = json.optJSONArray("chargers");
+        if (arr != null) {
+            for (int i = 0; i < arr.length() && i < 4; i++) {
+                JSONObject chObj = arr.optJSONObject(i);
+                if (chObj != null) {
+                    getCharger(i).updateFromJson(chObj);
+                }
+            }
+        }
+
         JSONObject gov = json.optJSONObject("governor");
         if (gov != null) governor.updateFromJson(gov);
     }
@@ -58,6 +95,8 @@ public class EvccTelemetry {
         this.traceCharger = false;
         this.charger1 = new ChargerTelemetry(40, "tsm2500");
         this.charger2 = new ChargerTelemetry(41, "tsm2500_41");
+        this.charger3 = new ChargerTelemetry(42, "tsm2500_42");
+        this.charger4 = new ChargerTelemetry(43, "tsm2500_43");
         this.governor = new ThermalGovernorTelemetry();
     }
 }

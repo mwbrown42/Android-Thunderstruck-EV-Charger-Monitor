@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 35
-    namespace 'com.thunderstruck.evcc.monitor'
+    namespace 'com.mikeland.thunderstruck.evcc.monitor'
 
     defaultConfig {
-        applicationId "com.thunderstruck.evcc.monitor"
+        applicationId "com.mikeland.thunderstruck.evcc.monitor"
         minSdkVersion 29
         targetSdkVersion 35
         versionCode 1

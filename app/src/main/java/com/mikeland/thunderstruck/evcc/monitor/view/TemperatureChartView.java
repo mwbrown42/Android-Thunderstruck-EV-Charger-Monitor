@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor.view;
+package com.mikeland.thunderstruck.evcc.monitor.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -19,12 +19,13 @@ import java.util.Locale;
 public class TemperatureChartView extends View {
 
     private static class TempDataPoint {
-        float c1Temp;
-        float c2Temp;
+        final float[] temps = new float[4];
 
-        TempDataPoint(float c1, float c2) {
-            this.c1Temp = c1;
-            this.c2Temp = c2;
+        TempDataPoint(float c1, float c2, float c3, float c4) {
+            this.temps[0] = c1;
+            this.temps[1] = c2;
+            this.temps[2] = c3;
+            this.temps[3] = c4;
         }
     }
 
@@ -39,13 +40,17 @@ public class TemperatureChartView extends View {
     private Paint textPaint;
     private Paint warningLinePaint;
     private Paint criticalLinePaint;
-    private Paint c1LinePaint;
-    private Paint c2LinePaint;
+    private final Paint[] chargerLinePaints = new Paint[4];
     private Paint bgPaint;
 
-    private int c1Color = Color.parseColor("#FB923C");       // Warm Orange for Charger 1
-    private int c2Color = Color.parseColor("#E879F9");       // Orchid / Violet for Charger 2
-    private int warningColor = Color.parseColor("#F59E0B");  // Amber for 53°C derate line
+    private final int[] chargerColors = new int[]{
+            Color.parseColor("#FB923C"), // C1: Warm Orange
+            Color.parseColor("#E879F9"), // C2: Orchid / Violet
+            Color.parseColor("#38BDF8"), // C3: Sky Blue
+            Color.parseColor("#FACC15")  // C4: Bright Yellow
+    };
+
+    private int warningColor = Color.parseColor("#F59E0B");  // Amber for 50°C derate line
     private int criticalColor = Color.parseColor("#EF4444"); // Red for 60°C trip line
     private int gridColor = Color.parseColor("#1E293B");     // Dark slate
     private int textColor = Color.parseColor("#94A3B8");     // Muted gray
@@ -93,19 +98,14 @@ public class TemperatureChartView extends View {
         criticalLinePaint.setStyle(Paint.Style.STROKE);
         criticalLinePaint.setPathEffect(new DashPathEffect(new float[]{8f, 8f}, 0));
 
-        c1LinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        c1LinePaint.setColor(c1Color);
-        c1LinePaint.setStrokeWidth(3.5f);
-        c1LinePaint.setStyle(Paint.Style.STROKE);
-        c1LinePaint.setStrokeCap(Paint.Cap.ROUND);
-        c1LinePaint.setStrokeJoin(Paint.Join.ROUND);
-
-        c2LinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        c2LinePaint.setColor(c2Color);
-        c2LinePaint.setStrokeWidth(3.5f);
-        c2LinePaint.setStyle(Paint.Style.STROKE);
-        c2LinePaint.setStrokeCap(Paint.Cap.ROUND);
-        c2LinePaint.setStrokeJoin(Paint.Join.ROUND);
+        for (int i = 0; i < 4; i++) {
+            chargerLinePaints[i] = new Paint(Paint.ANTI_ALIAS_FLAG);
+            chargerLinePaints[i].setColor(chargerColors[i]);
+            chargerLinePaints[i].setStrokeWidth(3.5f);
+            chargerLinePaints[i].setStyle(Paint.Style.STROKE);
+            chargerLinePaints[i].setStrokeCap(Paint.Cap.ROUND);
+            chargerLinePaints[i].setStrokeJoin(Paint.Join.ROUND);
+        }
     }
 
     public void applyTheme(@Nullable Typeface font, int titleColor, int valueColor, int indicatorColor, int negativeColor, int tickColor) {
@@ -120,10 +120,14 @@ public class TemperatureChartView extends View {
     }
 
     public synchronized void addDataPoint(float c1Temp, float c2Temp) {
+        addDataPoint(c1Temp, c2Temp, 0f, 0f);
+    }
+
+    public synchronized void addDataPoint(float c1Temp, float c2Temp, float c3Temp, float c4Temp) {
         if (dataPoints.size() >= MAX_POINTS) {
             dataPoints.remove(0);
         }
-        dataPoints.add(new TempDataPoint(c1Temp, c2Temp));
+        dataPoints.add(new TempDataPoint(c1Temp, c2Temp, c3Temp, c4Temp));
         postInvalidate();
     }
 
@@ -161,51 +165,50 @@ public class TemperatureChartView extends View {
 
             canvas.drawLine(paddingLeft, y, paddingLeft + chartW, y, gridPaint);
 
-            String label = t + "°C";
+            String label = t + "\u00B0C";
             textPaint.setColor(textColor);
             textPaint.setTextAlign(Paint.Align.RIGHT);
             canvas.drawText(label, paddingLeft - 8f, y + 6f, textPaint);
         }
 
-        // Derate threshold line: 53°C
-        float norm53 = (53.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-        float y53 = paddingTop + chartH - (norm53 * chartH);
-        canvas.drawLine(paddingLeft, y53, paddingLeft + chartW, y53, warningLinePaint);
+        // Derate threshold line: 50°C (Active thermal governor derate)
+        float norm50 = (50.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+        float y50 = paddingTop + chartH - (norm50 * chartH);
+        canvas.drawLine(paddingLeft, y50, paddingLeft + chartW, y50, warningLinePaint);
         textPaint.setColor(warningColor);
         textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("53\u00B0 DERATE", paddingLeft + chartW - 6f, y53 - 4f, textPaint);
+        canvas.drawText("50\u00B0 DERATE", paddingLeft + chartW - 6f, y50 - 4f, textPaint);
 
-        // Emergency trip line: 64°C
-        float norm64 = (64.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-        float y64 = paddingTop + chartH - (norm64 * chartH);
-        canvas.drawLine(paddingLeft, y64, paddingLeft + chartW, y64, criticalLinePaint);
+        // Emergency trip line: 60°C (EVCC hard overtemp shutdown threshold)
+        float norm60 = (60.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+        float y60 = paddingTop + chartH - (norm60 * chartH);
+        canvas.drawLine(paddingLeft, y60, paddingLeft + chartW, y60, criticalLinePaint);
         textPaint.setColor(criticalColor);
         textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("64\u00B0 TRIP", paddingLeft + chartW - 6f, y64 - 4f, textPaint);
+        canvas.drawText("60\u00B0 TRIP", paddingLeft + chartW - 6f, y60 - 4f, textPaint);
 
         // Header Title / Legend
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setColor(Color.parseColor("#E2E8F0"));
-        canvas.drawText("🌡️ Temperature History", paddingLeft, paddingTop - 12f, textPaint);
+        canvas.drawText("\uD83C\uDF21\uFE0F Temperature History", paddingLeft, paddingTop - 12f, textPaint);
 
-        // Draw Live Values in Header if available
-        float curC1 = 0.0f;
-        float curC2 = 0.0f;
+        // Draw Live Values in Header for all active chargers
+        float[] lastTemps = new float[4];
         synchronized (this) {
             if (!dataPoints.isEmpty()) {
                 TempDataPoint last = dataPoints.get(dataPoints.size() - 1);
-                curC1 = last.c1Temp;
-                curC2 = last.c2Temp;
+                System.arraycopy(last.temps, 0, lastTemps, 0, 4);
             }
         }
 
         float legendX = paddingLeft + 250f;
-        textPaint.setColor(c1Color);
-        canvas.drawText(String.format(Locale.US, "C1: %.1f°C", curC1), legendX, paddingTop - 12f, textPaint);
-
-        if (curC2 > 0.0f) {
-            textPaint.setColor(c2Color);
-            canvas.drawText(String.format(Locale.US, "C2: %.1f°C", curC2), legendX + 130f, paddingTop - 12f, textPaint);
+        for (int ch = 0; ch < 4; ch++) {
+            if (ch == 0 || lastTemps[ch] > 0.0f) {
+                textPaint.setColor(chargerColors[ch]);
+                String label = String.format(Locale.US, "C%d: %.1f\u00B0C", ch + 1, lastTemps[ch]);
+                canvas.drawText(label, legendX, paddingTop - 12f, textPaint);
+                legendX += 115f;
+            }
         }
 
         // Draw temperature line traces
@@ -220,43 +223,36 @@ public class TemperatureChartView extends View {
                 return;
             }
 
-            Path c1Path = new Path();
-            Path c2Path = new Path();
-            boolean c1Started = false;
-            boolean c2Started = false;
+            Path[] paths = new Path[4];
+            boolean[] started = new boolean[4];
+            for (int ch = 0; ch < 4; ch++) {
+                paths[ch] = new Path();
+            }
 
             for (int i = 0; i < n; i++) {
                 TempDataPoint pt = dataPoints.get(i);
                 float x = paddingLeft + ((float) i / (float) (n - 1)) * chartW;
 
-                // C1
-                float normC1 = (Math.max(MIN_TEMP, Math.min(MAX_TEMP, pt.c1Temp)) - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-                float y1 = paddingTop + chartH - (normC1 * chartH);
-                if (!c1Started) {
-                    c1Path.moveTo(x, y1);
-                    c1Started = true;
-                } else {
-                    c1Path.lineTo(x, y1);
-                }
-
-                // C2
-                if (pt.c2Temp > 0.0f) {
-                    float normC2 = (Math.max(MIN_TEMP, Math.min(MAX_TEMP, pt.c2Temp)) - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-                    float y2 = paddingTop + chartH - (normC2 * chartH);
-                    if (!c2Started) {
-                        c2Path.moveTo(x, y2);
-                        c2Started = true;
-                    } else {
-                        c2Path.lineTo(x, y2);
+                for (int ch = 0; ch < 4; ch++) {
+                    float temp = pt.temps[ch];
+                    if (ch == 0 || temp > 0.0f) {
+                        float norm = (Math.max(MIN_TEMP, Math.min(MAX_TEMP, temp)) - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+                        float y = paddingTop + chartH - (norm * chartH);
+                        if (!started[ch]) {
+                            paths[ch].moveTo(x, y);
+                            started[ch] = true;
+                        } else {
+                            paths[ch].lineTo(x, y);
+                        }
                     }
                 }
             }
 
-            canvas.drawPath(c1Path, c1LinePaint);
-            if (c2Started) {
-                canvas.drawPath(c2Path, c2LinePaint);
+            for (int ch = 0; ch < 4; ch++) {
+                if (started[ch]) {
+                    canvas.drawPath(paths[ch], chargerLinePaints[ch]);
+                }
             }
         }
     }
 }
-

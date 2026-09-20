@@ -1,8 +1,14 @@
 # Android Thunderstruck EV Charger Monitor
 
-A high-performance, standalone Android tablet and smartphone application engineered specifically to monitor, control, and analyze electric vehicle charging sessions powered by the **Thunderstruck Motors EV Charge Controller (EVCC)** and dual (or single) **Thunderstruck / Lear TSM-2500 HF CANbus Chargers**.
+A high-performance, standalone Android tablet and automotive head unit application engineered specifically to monitor, control, and analyze electric vehicle charging sessions powered by the **Thunderstruck Motors EV Charge Controller (EVCC)** and up to **4 Thunderstruck / Lear TSM-2500 HF CANbus Chargers**.
 
-This project provides an open-source, generic dashboard interface completely decoupled from any specific vehicle platform, CAN bus logger, or custom vehicle dashboard.
+This application is an open-source, generic EV charging monitor decoupled completely from any specific vehicle platform, dashboard, or CAN logger.
+
+<p align="center">
+  <img src="docs/images/charging_tab_screen.png" alt="Android Thunderstruck EV Charger Monitor Live 4 Charger Dashboard" width="800">
+  <br>
+  <em>Figure 1: Standalone Android Tablet Monitor showing 4 chargers active in real-time with dual-axis charts and thermal governor tracking</em>
+</p>
 
 ---
 
@@ -17,22 +23,28 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
 
 - **Zero-Configuration Automatic Gateway Discovery**:
   - Listens asynchronously on UDP broadcast port `8888` for periodic JSON beacon packets (`{"status":"heartbeat","ip":"..."}`) broadcasted by the ESP32 Gateway.
-  - Automatically identifies the gateway IP and connects via WebSocket (`ws://<ip>:80/ws`) without requiring the user to look up DHCP leases or configure static IPs.
+  - Automatically identifies the gateway IP and connects via WebSocket (`ws://<ip>:80/ws`) without requiring the user to configure static IPs or look up DHCP leases.
   - Features an active 4-second watchdog that updates an **Online / Offline** status pill in real-time.
 
-- **Dual Charger Telemetry Monitoring**:
-  - **Charger 1 (`charger`, `tsm2500`, CAN ID 0x40)**
-  - **Charger 2 (`charger2`, `tsm2500_41`, CAN ID 0x41)**
-  - Real-time digital gauges for:
+- **Dynamic 1 to 4 Charger Support (Up to 80A Total Charging Current)**:
+  - Supports up to 4 parallel TSM-2500 chargers on CANbus IDs 40..43 (`0x28`..`0x2B`):
+    - **Charger 1 (`tsm2500`, ID 40)**
+    - **Charger 2 (`tsm2500_41`, ID 41)**
+    - **Charger 3 (`tsm2500_42`, ID 42)**
+    - **Charger 4 (`tsm2500_43`, ID 43)**
+  - Handles up to **80.0A** aggregate charging current (4x 20.0A chargers) with live total wattage and amperage calculations.
+  - **Dynamic Card Flexibility**: Automatically adapts between 1, 2, 3, or 4 charger cards based on active CAN telemetry with equal-width layout and zero vertical scrolling.
+
+- **Per-Charger Telemetry Gauges**:
+  - Digital readouts for:
     - **Voltage** (V)
     - **Current** (A)
     - **Instant Power** (Watts)
     - **Accumulated Session Energy** (Watt-hours / kWh)
     - **Internal Heatsink Temperature** (°C)
-  - **Adaptive Card Visibility**: Automatically adapts between single-charger and dual-charger configurations based on detected CAN bus activity and persists the layout across restarts.
 
 - **Fault & Diagnostic Badges**:
-  - Instant visual indicators for all EVCC and TSM-2500 hardware alert states:
+  - Instant visual alert pills for all EVCC and TSM-2500 hardware alert states:
     - `rxerr` (CANbus receive error)
     - `hwfail` (Internal hardware failure)
     - `overtemp` (Charger thermal trip / shutdown)
@@ -45,13 +57,13 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
   - Dynamic dual-axis auto-scaling on both voltage and current ranges as charging progresses from Constant Current (CC) to Constant Voltage (CV) taper.
 
 - **Multi-Zone Temperature History Chart**:
-  - Displays session temperature traces for each charger against industry-standard safety thresholds:
-    - **53°C Derate Warning Threshold** (amber dash line)
-    - **64°C Emergency Trip Boundary** (red dash line)
+  - Displays session temperature traces for each charger against hardware safety thresholds:
+    - **50°C Derate Warning Threshold** (amber dash line)
+    - **60°C Emergency Trip Boundary** (red dash line — EVCC hard trip cutoff)
 
 - **Intelligent Thermal Governor Integration**:
   - Real-time governor tracking with status pills (`🛡️ Gov: OPTIMAL`, `⚠️ Gov: 75%`, `⚪ Gov: OFF`).
-  - Proactively alerts when current has been throttled to prevent thermal shutdowns, showing exact baseline vs derated amperage.
+  - Proactively alerts when current has been throttled to prevent thermal shutdowns, showing exact baseline vs derated amperage with a 3°C hysteresis guard (<= 47°C recovery).
 
 - **Bidirectional EVCC Command Console**:
   - Full ASCII serial terminal connected directly to the EVCC at 9600 baud.
@@ -60,18 +72,18 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
     - `CONFIG` (Active configuration parameters)
     - `HISTORY` (Past charge cycle records)
   - Toggle buttons for EVCC trace modes (`TR CAN`, `TR STATE`, `TR CHG`, `TR OFF`).
-  - Input field to adjust `maxv`, `maxc`, or send any arbitrary EVCC CLI command.
+  - Input field to adjust `maxv`, `maxc` (up to 80A), or send any arbitrary EVCC CLI command.
   - Built-in session logging with copy-to-clipboard and export.
 
 - **Built-in Interactive Simulator Engine**:
   - Integrated offline simulation engine with 8 realistic scenario presets:
-    - **Dual Chg**: Full 44A dual-charger 6.3 kW session.
-    - **Single Chg**: 22A single-charger session.
+    - **4 Chg**: Full 80A quad-charger session (4x 20A).
+    - **2 Chg**: 40A dual-charger session (2x 20A).
+    - **1 Chg**: 20A single-charger session.
     - **CV Taper**: Constant voltage current ramp-down.
-    - **Overtemp**: Heatsink thermal ramp with governor intervention.
+    - **Overtemp**: Heatsink thermal ramp (>=60°C trip cutoff).
     - **CAN Rxerr**: Simulated CAN bus communication fault.
-    - **Input Err**: AC mains low-voltage condition.
-    - **Pack Err**: Traction battery voltage fault.
+    - **Volt Err**: Traction battery voltage fault.
     - **Standby**: Idle disconnected state.
   - Interactive voltage and current sliders for dynamic testing without vehicle hardware.
 
@@ -87,7 +99,7 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
 Android Thunderstruck EV Charger Monitor/
 ├── app/
 │   ├── src/main/
-│   │   ├── java/com/thunderstruck/evcc/monitor/
+│   │   ├── java/com/mikeland/thunderstruck/evcc/monitor/
 │   │   │   ├── MainActivity.java                # Host activity & lifecycle manager
 │   │   │   ├── SettingsActivity.java            # App configuration preferences
 │   │   │   ├── controller/
@@ -95,14 +107,14 @@ Android Thunderstruck EV Charger Monitor/
 │   │   │   │   ├── EvccSimulatorEngine.java     # Offline simulation test harness
 │   │   │   │   └── EvccSessionLogger.java       # Session telemetry logging to disk
 │   │   │   ├── model/
-│   │   │   │   ├── EvccTelemetry.java           # Composite EVCC telemetry model
+│   │   │   │   ├── EvccTelemetry.java           # Composite EVCC telemetry model (4 chargers)
 │   │   │   │   ├── ChargerTelemetry.java        # Per-charger voltage/current/temp model
 │   │   │   │   ├── SessionDataPoint.java        # Time-series graph data point
 │   │   │   │   └── ThermalGovernorTelemetry.java# Thermal governor state model
 │   │   │   └── view/
 │   │   │       ├── ChargingTabViewController.java # Full tab UI controller & event binder
 │   │   │       ├── ChargingChartView.java       # Custom Canvas dual-axis chart
-│   │   │       └── TemperatureChartView.java    # Custom Canvas temperature chart
+│   │   │       └── TemperatureChartView.java    # Multi-charger temperature chart (50°C/60°C)
 │   │   ├── res/
 │   │   │   ├── layout/                          # Portrait responsive layouts
 │   │   │   ├── layout-land/                     # Automotive landscape tablet layouts
@@ -139,25 +151,26 @@ Full telemetry broadcasted at 1 Hz during active sessions:
   "type": "telemetry",
   "state": "CHARGE",
   "j1772": "LOCKED",
-  "maxv": 142.0,
-  "maxc": 40.0,
+  "maxv": 142.6,
+  "maxc": 80.0,
   "governor": {
     "enabled": true,
-    "active_maxc": 20.0,
-    "baseline_maxc": 40.0,
+    "active_maxc": 80.0,
+    "baseline_maxc": 80.0,
     "derate_percent": 100,
     "is_derated": false,
     "peak_temp": 38.5,
-    "hottest_charger": "C2",
+    "hottest_charger": "charger",
     "status": "OPTIMAL"
   },
   "c1": {
     "active": true,
-    "voltage": 142.5,
+    "id": 40,
+    "voltage": 142.6,
     "current": 20.0,
-    "power": 2850,
-    "watt_hours": 1250,
-    "temperature": 38.2,
+    "power": 2852,
+    "watt_hours": 1450,
+    "temperature": 38.5,
     "rxerr": false,
     "hwfail": false,
     "overtemp": false,
@@ -167,11 +180,42 @@ Full telemetry broadcasted at 1 Hz during active sessions:
   },
   "c2": {
     "active": true,
-    "voltage": 142.5,
+    "id": 41,
+    "voltage": 142.6,
     "current": 20.0,
-    "power": 2850,
-    "watt_hours": 1250,
-    "temperature": 39.1,
+    "power": 2852,
+    "watt_hours": 1440,
+    "temperature": 39.7,
+    "rxerr": false,
+    "hwfail": false,
+    "overtemp": false,
+    "not_charging": false,
+    "input_voltage_err": false,
+    "pack_voltage_err": false
+  },
+  "c3": {
+    "active": true,
+    "id": 42,
+    "voltage": 142.6,
+    "current": 20.0,
+    "power": 2852,
+    "watt_hours": 1435,
+    "temperature": 41.2,
+    "rxerr": false,
+    "hwfail": false,
+    "overtemp": false,
+    "not_charging": false,
+    "input_voltage_err": false,
+    "pack_voltage_err": false
+  },
+  "c4": {
+    "active": true,
+    "id": 43,
+    "voltage": 142.6,
+    "current": 20.0,
+    "power": 2852,
+    "watt_hours": 1430,
+    "temperature": 42.7,
     "rxerr": false,
     "hwfail": false,
     "overtemp": false,
@@ -188,7 +232,7 @@ Full telemetry broadcasted at 1 Hz during active sessions:
 
 ### Requirements
 - Android SDK 29+ (Target SDK: 35)
-- Java 11
+- Java 17 / Java 11
 - Gradle 8.9+ (included wrapper)
 
 ### Compiling via Command Line
@@ -205,13 +249,13 @@ app/build/outputs/apk/debug/app-debug.apk
 ### Installing onto Android Device via ADB
 ```powershell
 # Connect to tablet over Wi-Fi ADB
-adb connect <tablet-ip>:5555
+adb connect 192.168.2.156:5555
 
 # Install or upgrade
-adb -s <tablet-ip>:5555 install -r app/build/outputs/apk/debug/app-debug.apk
+adb -s 192.168.2.156:5555 install -r app/build/outputs/apk/debug/app-debug.apk
 
 # Launch app
-adb -s <tablet-ip>:5555 shell am start -n com.thunderstruck.evcc.monitor/.MainActivity
+adb -s 192.168.2.156:5555 shell am start -n com.mikeland.thunderstruck.evcc.monitor/.MainActivity
 ```
 
 ---

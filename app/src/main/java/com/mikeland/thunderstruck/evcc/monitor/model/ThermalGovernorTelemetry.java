@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor.model;
+package com.mikeland.thunderstruck.evcc.monitor.model;
 
 import org.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor.view;
+package com.mikeland.thunderstruck.evcc.monitor.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +11,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
-import com.thunderstruck.evcc.monitor.model.SessionDataPoint;
+import com.mikeland.thunderstruck.evcc.monitor.model.SessionDataPoint;
 
 import java.util.ArrayList;
 import java.util.List;

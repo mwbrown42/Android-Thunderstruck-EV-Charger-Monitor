@@ -1,10 +1,10 @@
-package com.thunderstruck.evcc.monitor.controller;
+package com.mikeland.thunderstruck.evcc.monitor.controller;
 
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.thunderstruck.evcc.monitor.model.EvccTelemetry;
+import com.mikeland.thunderstruck.evcc.monitor.model.EvccTelemetry;
 
 import org.json.JSONObject;
 

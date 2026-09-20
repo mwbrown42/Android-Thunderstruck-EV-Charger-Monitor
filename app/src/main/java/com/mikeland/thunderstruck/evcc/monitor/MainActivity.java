@@ -1,11 +1,11 @@
-package com.thunderstruck.evcc.monitor;
+package com.mikeland.thunderstruck.evcc.monitor;
 
 import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import com.thunderstruck.evcc.monitor.controller.EvccGatewayClient;
-import com.thunderstruck.evcc.monitor.controller.EvccSessionLogger;
-import com.thunderstruck.evcc.monitor.view.ChargingTabViewController;
+import com.mikeland.thunderstruck.evcc.monitor.controller.EvccGatewayClient;
+import com.mikeland.thunderstruck.evcc.monitor.controller.EvccSessionLogger;
+import com.mikeland.thunderstruck.evcc.monitor.view.ChargingTabViewController;
 
 public class MainActivity extends AppCompatActivity {
 

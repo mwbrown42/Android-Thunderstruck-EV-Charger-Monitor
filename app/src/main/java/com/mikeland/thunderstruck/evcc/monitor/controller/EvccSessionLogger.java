@@ -1,4 +1,4 @@
-package com.thunderstruck.evcc.monitor.controller;
+package com.mikeland.thunderstruck.evcc.monitor.controller;
 
 import android.content.Context;
 import android.util.Log;
