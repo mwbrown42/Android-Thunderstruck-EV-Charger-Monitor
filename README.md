@@ -237,7 +237,8 @@ Full telemetry broadcasted at 1 Hz during active sessions:
 
 ### Compiling via Command Line
 ```powershell
-cd "Z:\Personal\Mike\AndroidDevelopment\Android Thunderstruck EV Charger Monitor"
+git clone https://github.com/mwbrown42/Android-Thunderstruck-EV-Charger-Monitor.git
+cd Android-Thunderstruck-EV-Charger-Monitor
 .\gradlew.bat assembleDebug
 ```
 
@@ -248,14 +249,14 @@ app/build/outputs/apk/debug/app-debug.apk
 
 ### Installing onto Android Device via ADB
 ```powershell
-# Connect to tablet over Wi-Fi ADB
-adb connect 192.168.2.156:5555
+# Connect to Android device over Wi-Fi ADB
+adb connect <DEVICE_IP>:<PORT>
 
 # Install or upgrade
-adb -s 192.168.2.156:5555 install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 # Launch app
-adb -s 192.168.2.156:5555 shell am start -n com.mikeland.thunderstruck.evcc.monitor/.MainActivity
+adb shell am start -n com.mikeland.thunderstruck.evcc.monitor/.MainActivity
 ```
 
 ---
