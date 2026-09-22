@@ -56,14 +56,26 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
   - Dual-curve canvas graphs overlaying **Voltage** (violet) and **Current** (emerald green) in real-time.
   - Dynamic dual-axis auto-scaling on both voltage and current ranges as charging progresses from Constant Current (CC) to Constant Voltage (CV) taper.
 
-- **Multi-Zone Temperature History Chart**:
-  - Displays session temperature traces for each charger against hardware safety thresholds:
-    - **50°C Derate Warning Threshold** (amber dash line)
-    - **60°C Emergency Trip Boundary** (red dash line — EVCC hard trip cutoff)
+- **Dynamic CC/CV Saturation Governor & Charge Curve Display**:
+  - Real-time custom Canvas CC/CV profile chart visualizing pack saturation curve, knee points, and active operating setpoint.
+  - **Pre-Configured Chemistry Presets**:
+    - **Conservative (4.10V / 147.6V)**: 50A $\rightarrow$ 35A $\rightarrow$ 20A $\rightarrow$ 10A $\rightarrow$ 4A (4.0A termination).
+    - **Standard (4.15V / 149.4V)**: 50A $\rightarrow$ 35A $\rightarrow$ 20A $\rightarrow$ 10A $\rightarrow$ 4A (4.0A termination).
+    - **Max Range (4.20V / 151.2V)**: 50A $\rightarrow$ 35A $\rightarrow$ 20A $\rightarrow$ 10A $\rightarrow$ 4A (4.0A termination).
+    - **Custom**: User can freely customize all 5 voltage/current points and cell count.
+  - **EEPROM Endurance Protection**: Operates in Discrete Stepped Mode with a $\ge 1.0\text{A}$ deadband to limit EVCC microcontroller writes to 4–5 per session, with live EEPROM write counter.
+  - **Clean Fast Cutoff**: Terminates charge cleanly at termination threshold (`set maxc 0.0`), opening contactors without prolonged low-current trickling.
 
-- **Intelligent Thermal Governor Integration**:
-  - Real-time governor tracking with status pills (`🛡️ Gov: OPTIMAL`, `⚠️ Gov: 75%`, `⚪ Gov: OFF`).
-  - Proactively alerts when current has been throttled to prevent thermal shutdowns, showing exact baseline vs derated amperage with a 3°C hysteresis guard (<= 47°C recovery).
+- **Expanded Temperature History Chart**:
+  - Dynamically utilizes 100% of available card height with zero bottom dead space.
+  - Displays session temperature traces for each charger against hardware safety thresholds:
+    - **75°C Derate Knee** (amber dash line)
+    - **85°C Emergency Trip Boundary** (red dash line — hard safety cutoff)
+
+- **v4.0 Intelligent Thermal Governor Integration**:
+  - Real-time governor tracking with status pills (`🛡️ Gov: OPTIMAL`, `⚠️ Gov: DERATED`, `⚪ Gov: OFF`).
+  - **Independent Per-Charger Throttling**: Computes safe current allocations for each charger individually, avoiding throttling cooler units unnecessarily.
+  - Automatic recovery hysteresis floor (<= 71°C) with 90-second dwell stabilization timer.
 
 - **Bidirectional EVCC Command Console**:
   - Full ASCII serial terminal connected directly to the EVCC at 9600 baud.
@@ -81,7 +93,7 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
     - **2 Chg**: 40A dual-charger session (2x 20A).
     - **1 Chg**: 20A single-charger session.
     - **CV Taper**: Constant voltage current ramp-down.
-    - **Overtemp**: Heatsink thermal ramp (>=60°C trip cutoff).
+    - **Overtemp**: Heatsink thermal ramp (>=85°C trip cutoff).
     - **CAN Rxerr**: Simulated CAN bus communication fault.
     - **Volt Err**: Traction battery voltage fault.
     - **Standby**: Idle disconnected state.
@@ -110,11 +122,14 @@ Android Thunderstruck EV Charger Monitor/
 │   │   │   │   ├── EvccTelemetry.java           # Composite EVCC telemetry model (4 chargers)
 │   │   │   │   ├── ChargerTelemetry.java        # Per-charger voltage/current/temp model
 │   │   │   │   ├── SessionDataPoint.java        # Time-series graph data point
-│   │   │   │   └── ThermalGovernorTelemetry.java# Thermal governor state model
+│   │   │   │   ├── ThermalGovernorTelemetry.java# Thermal governor state model
+│   │   │   │   ├── CccvGovernorTelemetry.java   # CC/CV governor state & EEPROM writes
+│   │   │   │   └── CccvProfile.java             # 5-point CC/CV curve & chemistry presets
 │   │   │   └── view/
 │   │   │       ├── ChargingTabViewController.java # Full tab UI controller & event binder
 │   │   │       ├── ChargingChartView.java       # Custom Canvas dual-axis chart
-│   │   │       └── TemperatureChartView.java    # Multi-charger temperature chart (50°C/60°C)
+│   │   │       ├── CccvCurveChartView.java      # Custom Canvas CC/CV saturation curve
+│   │   │       └── TemperatureChartView.java    # Expanded temperature chart (75°C/85°C)
 │   │   ├── res/
 │   │   │   ├── layout/                          # Portrait responsive layouts
 │   │   │   ├── layout-land/                     # Automotive landscape tablet layouts

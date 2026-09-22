@@ -491,4 +491,65 @@ public class EvccGatewayClient {
             }
         }
     }
+
+    public void sendCccvToggle(boolean enabled) {
+        EvccSessionLogger.getInstance().log("CCCV_TX", "enabled=" + enabled);
+        if (listener != null) {
+            mainHandler.post(() -> listener.onRawLineReceived("[Tablet CC/CV] --> " + (enabled ? "ENABLE" : "DISABLE") + "\n", true));
+        }
+        if (webSocket != null && isConnected) {
+            try {
+                JSONObject json = new JSONObject();
+                json.put("action", "toggle_cccv");
+                json.put("enabled", enabled);
+                webSocket.send(json.toString());
+            } catch (Exception e) {
+                Log.e(TAG, "Error sending CC/CV toggle", e);
+            }
+        }
+    }
+
+    public void sendCccvPreset(String preset) {
+        EvccSessionLogger.getInstance().log("CCCV_TX", "preset=" + preset);
+        if (listener != null) {
+            mainHandler.post(() -> listener.onRawLineReceived("[Tablet CC/CV] --> Preset: " + preset + "\n", true));
+        }
+        if (webSocket != null && isConnected) {
+            try {
+                JSONObject json = new JSONObject();
+                json.put("action", "set_cccv_preset");
+                json.put("preset", preset);
+                webSocket.send(json.toString());
+            } catch (Exception e) {
+                Log.e(TAG, "Error sending CC/CV preset", e);
+            }
+        }
+    }
+
+    public void sendCccvProfile(com.mikeland.thunderstruck.evcc.monitor.model.CccvProfile profile) {
+        if (profile == null) return;
+        EvccSessionLogger.getInstance().log("CCCV_TX", "profile: cells=" + profile.cellCount);
+        if (webSocket != null && isConnected) {
+            try {
+                JSONObject json = new JSONObject();
+                json.put("action", "set_cccv_profile");
+                json.put("enabled", profile.enabled);
+                json.put("cellCount", profile.cellCount);
+                json.put("smoothLinear", profile.smoothLinear);
+                json.put("fastCutoff", profile.fastCutoff);
+                json.put("termAmps", profile.terminationAmps);
+                org.json.JSONArray pts = new org.json.JSONArray();
+                for (com.mikeland.thunderstruck.evcc.monitor.model.CccvProfile.Point p : profile.points) {
+                    JSONObject ptObj = new JSONObject();
+                    ptObj.put("v", p.voltage);
+                    ptObj.put("a", p.current);
+                    pts.put(ptObj);
+                }
+                json.put("points", pts);
+                webSocket.send(json.toString());
+            } catch (Exception e) {
+                Log.e(TAG, "Error sending CC/CV profile", e);
+            }
+        }
+    }
 }

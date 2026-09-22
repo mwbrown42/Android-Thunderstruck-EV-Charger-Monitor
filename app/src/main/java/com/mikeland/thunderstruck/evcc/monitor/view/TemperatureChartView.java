@@ -32,9 +32,9 @@ public class TemperatureChartView extends View {
     private final List<TempDataPoint> dataPoints = new ArrayList<>();
     private final int MAX_POINTS = 150;
 
-    // Temperature axis range: 20°C min to 70°C max
+    // Temperature axis range: 20°C min to 90°C max (accommodates 85°C TSM2500 trip ceiling)
     private final float MIN_TEMP = 20.0f;
-    private final float MAX_TEMP = 70.0f;
+    private final float MAX_TEMP = 90.0f;
 
     private Paint gridPaint;
     private Paint textPaint;
@@ -50,8 +50,8 @@ public class TemperatureChartView extends View {
             Color.parseColor("#FACC15")  // C4: Bright Yellow
     };
 
-    private int warningColor = Color.parseColor("#F59E0B");  // Amber for 50°C derate line
-    private int criticalColor = Color.parseColor("#EF4444"); // Red for 60°C trip line
+    private int warningColor = Color.parseColor("#F59E0B");  // Amber for 66°C derate line
+    private int criticalColor = Color.parseColor("#EF4444"); // Red for 85°C trip line
     private int gridColor = Color.parseColor("#1E293B");     // Dark slate
     private int textColor = Color.parseColor("#94A3B8");     // Muted gray
     private int bgColor = Color.parseColor("#000000");
@@ -158,8 +158,8 @@ public class TemperatureChartView extends View {
         // Border
         canvas.drawRect(paddingLeft, paddingTop, paddingLeft + chartW, paddingTop + chartH, gridPaint);
 
-        // Horizontal Grid Lines (every 10°C: 20, 30, 40, 50, 60, 70)
-        for (int t = 20; t <= 70; t += 10) {
+        // Horizontal Grid Lines (every 10°C: 20, 30, 40, 50, 60, 70, 80, 90)
+        for (int t = 20; t <= 90; t += 10) {
             float norm = (t - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
             float y = paddingTop + chartH - (norm * chartH);
 
@@ -171,21 +171,21 @@ public class TemperatureChartView extends View {
             canvas.drawText(label, paddingLeft - 8f, y + 6f, textPaint);
         }
 
-        // Derate threshold line: 50°C (Active thermal governor derate)
-        float norm50 = (50.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-        float y50 = paddingTop + chartH - (norm50 * chartH);
-        canvas.drawLine(paddingLeft, y50, paddingLeft + chartW, y50, warningLinePaint);
+        // Derate threshold line: 66°C (Active thermal governor derate)
+        float norm66 = (66.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+        float y66 = paddingTop + chartH - (norm66 * chartH);
+        canvas.drawLine(paddingLeft, y66, paddingLeft + chartW, y66, warningLinePaint);
         textPaint.setColor(warningColor);
         textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("50\u00B0 DERATE", paddingLeft + chartW - 6f, y50 - 4f, textPaint);
+        canvas.drawText("66\u00B0 DERATE", paddingLeft + chartW - 6f, y66 - 4f, textPaint);
 
-        // Emergency trip line: 60°C (EVCC hard overtemp shutdown threshold)
-        float norm60 = (60.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-        float y60 = paddingTop + chartH - (norm60 * chartH);
-        canvas.drawLine(paddingLeft, y60, paddingLeft + chartW, y60, criticalLinePaint);
+        // Emergency trip line: 85°C (TSM2500 internal hardware shutdown threshold)
+        float norm85 = (85.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+        float y85 = paddingTop + chartH - (norm85 * chartH);
+        canvas.drawLine(paddingLeft, y85, paddingLeft + chartW, y85, criticalLinePaint);
         textPaint.setColor(criticalColor);
         textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("60\u00B0 TRIP", paddingLeft + chartW - 6f, y60 - 4f, textPaint);
+        canvas.drawText("85\u00B0 TRIP", paddingLeft + chartW - 6f, y85 - 4f, textPaint);
 
         // Header Title / Legend
         textPaint.setTextAlign(Paint.Align.LEFT);

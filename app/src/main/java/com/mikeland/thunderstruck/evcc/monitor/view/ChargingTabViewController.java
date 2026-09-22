@@ -88,6 +88,13 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
     private boolean bannerDismissed = false;
     private boolean isUpdatingGovernorSwitch = false;
 
+    // CC/CV Dynamic Tapering Views
+    private TextView badgeCccv;
+    private View cardCccvGovernor;
+    private TextView cccvValVpack, cccvValVcell, cccvValItarget, cccvValIactive, cccvPhaseBadge;
+    private Button btnCccvSettings;
+    private CccvCurveChartView cccvChartView;
+
     // Charger View Holder Supporting up to 4 Chargers Dynamically
     private static class ChargerViewHolder {
         View cardView;
@@ -246,6 +253,24 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
         btnClearTerminal = rootView.findViewById(R.id.btn_clear_terminal);
         btnDiagUsb = rootView.findViewById(R.id.btn_diag_usb);
         btnViewEvccLog = rootView.findViewById(R.id.btn_view_evcc_log);
+
+        // CC/CV Dynamic Tapering
+        badgeCccv = rootView.findViewById(R.id.badge_cccv);
+        cardCccvGovernor = rootView.findViewById(R.id.card_cccv_governor);
+        cccvValVpack = rootView.findViewById(R.id.cccv_val_vpack);
+        cccvValVcell = rootView.findViewById(R.id.cccv_val_vcell);
+        cccvValItarget = rootView.findViewById(R.id.cccv_val_itarget);
+        cccvValIactive = rootView.findViewById(R.id.cccv_val_iactive);
+        cccvPhaseBadge = rootView.findViewById(R.id.cccv_phase_badge);
+        btnCccvSettings = rootView.findViewById(R.id.btn_cccv_settings);
+        cccvChartView = rootView.findViewById(R.id.cccv_chart_view);
+
+        if (btnCccvSettings != null) {
+            btnCccvSettings.setOnClickListener(v -> showCccvSettingsDialog());
+        }
+        if (badgeCccv != null) {
+            badgeCccv.setOnClickListener(v -> showCccvSettingsDialog());
+        }
 
         resetUIState();
     }
@@ -689,10 +714,10 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
             if (h.valTmp != null) {
                 if (ch.active) {
                     h.valTmp.setText(String.format(Locale.US, "%.1f °C", ch.temperature));
-                    if (ch.temperature >= 60f) {
-                        h.valTmp.setTextColor(Color.parseColor("#EF4444")); // Red on 60C Trip
-                    } else if (ch.temperature >= 50f) {
-                        h.valTmp.setTextColor(Color.parseColor("#F59E0B")); // Amber on Derate
+                    if (ch.temperature >= 82f) {
+                        h.valTmp.setTextColor(Color.parseColor("#EF4444")); // Red near 85°C ceiling
+                    } else if (ch.temperature >= 66f) {
+                        h.valTmp.setTextColor(Color.parseColor("#F59E0B")); // Amber in throttling band
                     } else {
                         h.valTmp.setTextColor(themeValueColor != 0 ? themeValueColor : Color.WHITE);
                     }
@@ -702,11 +727,17 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                 }
             }
 
+            ThermalGovernorTelemetry gov = telemetry.governor;
+            ThermalGovernorTelemetry.ChargerGovernorInfo chGov = (gov != null && gov.chargers != null && i < gov.chargers.length) ? gov.chargers[i] : null;
+
             if (h.statusBadge != null) {
                 if (ch.active) {
                     if (ch.overtemp) {
                         h.statusBadge.setText("OVERTEMP");
                         h.statusBadge.setTextColor(Color.parseColor("#EF4444"));
+                    } else if (gov != null && gov.enabled && chGov != null && chGov.isDerated) {
+                        h.statusBadge.setText(String.format(Locale.US, "DERATED %d%%", Math.round(chGov.scale * 100)));
+                        h.statusBadge.setTextColor(Color.parseColor("#F59E0B"));
                     } else if (ch.current > 0.5f) {
                         h.statusBadge.setText("CHARGING");
                         h.statusBadge.setTextColor(Color.parseColor("#10B981"));
@@ -753,6 +784,10 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
         if (telemetry.governor != null) {
             updateGovernorUI(telemetry.governor);
         }
+
+        if (telemetry.cccv != null) {
+            updateCccvUI(telemetry.cccv);
+        }
     }
 
     private void updateGovernorUI(ThermalGovernorTelemetry gov) {
@@ -783,15 +818,32 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                 badgeGovernor.setBackgroundColor(isCritical ? Color.parseColor("#450A0A") : Color.parseColor("#451A03"));
             }
             if (lblGovDetail != null) {
-                lblGovDetail.setText(String.format(Locale.US, "⚠️ %.1fA / %.1fA (%d%%) | Peak %s %.0f°C",
+                StringBuilder sb = new StringBuilder();
+                sb.append(String.format(Locale.US, "⚠️ %.1fA / %.1fA (%d%%) | Peak %s %.0f°C",
                         gov.activeMaxc, gov.baselineMaxc, gov.deratePercent, gov.hottestCharger, gov.peakTemp));
+                if (gov.chargers != null) {
+                    sb.append(" (");
+                    boolean first = true;
+                    for (int i = 0; i < 4; i++) {
+                        if (gov.chargers[i] != null && gov.chargers[i].temp > 0) {
+                            if (!first) sb.append(", ");
+                            sb.append(String.format(Locale.US, "C%d: %.0f°C", i + 1, gov.chargers[i].temp));
+                            if (gov.chargers[i].isDerated) {
+                                sb.append(String.format(Locale.US, " [%d%%]", Math.round(gov.chargers[i].scale * 100)));
+                            }
+                            first = false;
+                        }
+                    }
+                    sb.append(")");
+                }
+                lblGovDetail.setText(sb.toString());
                 lblGovDetail.setTextColor(Color.parseColor("#F59E0B"));
             }
             if (bannerThermalDerate != null && !bannerDismissed) {
                 bannerThermalDerate.setVisibility(View.VISIBLE);
                 if (bannerDerateDesc != null) {
                     bannerDerateDesc.setText(String.format(Locale.US,
-                            "Throttled %.1fA -> %.1fA (-%d%%) | %s at %.0f°C (%s)",
+                            "Throttled %.1fA -> %.1fA (-%d%%) by %s at %.0f°C (%s)",
                             gov.baselineMaxc, gov.activeMaxc, 100 - gov.deratePercent, gov.hottestCharger, gov.peakTemp, gov.statusText));
                 }
             }
@@ -802,13 +854,170 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                 badgeGovernor.setBackgroundColor(Color.parseColor("#1F293D"));
             }
             if (lblGovDetail != null) {
-                lblGovDetail.setText(String.format(Locale.US, "Active: %.1fA (100%%) | Peak %.0f°C",
+                lblGovDetail.setText(String.format(Locale.US, "Active: %.1fA (100%%) | Peak %.0f°C (Optimal <65°C)",
                         gov.baselineMaxc, gov.peakTemp));
                 lblGovDetail.setTextColor(Color.parseColor("#9CA3AF"));
             }
             if (bannerThermalDerate != null) bannerThermalDerate.setVisibility(View.GONE);
             bannerDismissed = false;
         }
+    }
+
+    private void updateCccvUI(com.mikeland.thunderstruck.evcc.monitor.model.CccvGovernorTelemetry cccv) {
+        if (cccv == null) return;
+
+        if (cccvChartView != null) {
+            cccvChartView.setTelemetry(cccv);
+        }
+
+        if (cccvValVpack != null) {
+            cccvValVpack.setText(String.format(Locale.US, "%.1f V", cccv.packVoltage));
+        }
+        if (cccvValVcell != null) {
+            cccvValVcell.setText(String.format(Locale.US, "%.3f V/c", cccv.cellVoltage));
+        }
+        if (cccvValItarget != null) {
+            cccvValItarget.setText(String.format(Locale.US, "%.1f A", cccv.targetAmps));
+        }
+        if (cccvValIactive != null) {
+            cccvValIactive.setText(String.format(Locale.US, "%.1f A", cccv.activeCurrent));
+        }
+
+        if (cccvPhaseBadge != null) {
+            String writeStr = cccv.writesThisSession > 0 ? (" [" + cccv.writesThisSession + " writes]") : "";
+            cccvPhaseBadge.setText(cccv.phase.replace('_', ' ') + writeStr);
+            if ("COMPLETE".equals(cccv.phase)) {
+                cccvPhaseBadge.setTextColor(Color.parseColor("#10B981"));
+            } else if (cccv.isTapering) {
+                cccvPhaseBadge.setTextColor(Color.parseColor("#F59E0B"));
+            } else {
+                cccvPhaseBadge.setTextColor(Color.parseColor("#38BDF8"));
+            }
+        }
+
+        if (badgeCccv != null) {
+            String writeStr = cccv.writesThisSession > 0 ? (" (" + cccv.writesThisSession + "w)") : "";
+            if (!cccv.enabled) {
+                badgeCccv.setText("⚪ CC/CV: OFF");
+                badgeCccv.setTextColor(Color.parseColor("#9CA3AF"));
+            } else if ("COMPLETE".equals(cccv.phase)) {
+                badgeCccv.setText("✅ CC/CV: COMPLETE" + writeStr);
+                badgeCccv.setTextColor(Color.parseColor("#10B981"));
+            } else if (cccv.isTapering) {
+                badgeCccv.setText(String.format(Locale.US, "📉 %s (%.1fA)%s", cccv.phase.replace('_', ' '), cccv.targetAmps, writeStr));
+                badgeCccv.setTextColor(Color.parseColor("#F59E0B"));
+            } else {
+                badgeCccv.setText(String.format(Locale.US, "⚡ BULK CC (%.1fA)%s", cccv.targetAmps, writeStr));
+                badgeCccv.setTextColor(Color.parseColor("#C4B5FD"));
+            }
+        }
+    }
+
+    private void showCccvSettingsDialog() {
+        if (context == null) return;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("⚙️ CC/CV Charge Curve Configuration");
+
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(context);
+        layout.setOrientation(android.widget.LinearLayout.VERTICAL);
+        layout.setPadding(32, 20, 32, 10);
+        layout.setBackgroundColor(Color.parseColor("#111827"));
+
+        TextView tvDesc = new TextView(context);
+        tvDesc.setText("Configure 5-point voltage and current derating profile to protect 36S Tesla pack from IR sag and cell overvoltage.");
+        tvDesc.setTextColor(Color.parseColor("#9CA3AF"));
+        tvDesc.setTextSize(12f);
+        tvDesc.setPadding(0, 0, 0, 16);
+        layout.addView(tvDesc);
+
+        // Preset buttons row
+        android.widget.LinearLayout rowPresets = new android.widget.LinearLayout(context);
+        rowPresets.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        rowPresets.setPadding(0, 0, 0, 16);
+
+        Button btnP1 = new Button(context);
+        btnP1.setText("Conservative (4.10V)");
+        btnP1.setTextSize(11f);
+        btnP1.setTextColor(Color.WHITE);
+        btnP1.setBackgroundColor(Color.parseColor("#374151"));
+        btnP1.setOnClickListener(v -> {
+            client.sendCccvPreset("conservative");
+            Toast.makeText(context, "Applied 36S Conservative (4.10V)", Toast.LENGTH_SHORT).show();
+        });
+
+        Button btnP2 = new Button(context);
+        btnP2.setText("Standard (4.15V)");
+        btnP2.setTextSize(11f);
+        btnP2.setTextColor(Color.WHITE);
+        btnP2.setBackgroundColor(Color.parseColor("#374151"));
+        btnP2.setOnClickListener(v -> {
+            client.sendCccvPreset("standard");
+            Toast.makeText(context, "Applied 36S Standard (4.15V)", Toast.LENGTH_SHORT).show();
+        });
+
+        Button btnP3 = new Button(context);
+        btnP3.setText("Max (4.20V)");
+        btnP3.setTextSize(11f);
+        btnP3.setTextColor(Color.WHITE);
+        btnP3.setBackgroundColor(Color.parseColor("#374151"));
+        btnP3.setOnClickListener(v -> {
+            client.sendCccvPreset("max_range");
+            Toast.makeText(context, "Applied 36S Max Range (4.20V)", Toast.LENGTH_SHORT).show();
+        });
+
+        android.widget.LinearLayout.LayoutParams btnParams = new android.widget.LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
+        btnParams.setMargins(4, 0, 4, 0);
+        rowPresets.addView(btnP1, btnParams);
+        rowPresets.addView(btnP2, btnParams);
+        rowPresets.addView(btnP3, btnParams);
+        layout.addView(rowPresets);
+
+        // Enable / Disable toggle
+        Switch swEnable = new Switch(context);
+        boolean isEnabled = (lastTelemetry != null && lastTelemetry.cccv != null) ? lastTelemetry.cccv.enabled : true;
+        swEnable.setText("Enable CC/CV Dynamic Tapering");
+        swEnable.setTextColor(Color.WHITE);
+        swEnable.setChecked(isEnabled);
+        swEnable.setOnCheckedChangeListener((bv, isChecked) -> client.sendCccvToggle(isChecked));
+        layout.addView(swEnable);
+
+        // Fast Cutoff toggle (Immediate 0A cutoff at ceiling to protect EEPROM)
+        Switch swFastCutoff = new Switch(context);
+        boolean isFastCutoff = (lastTelemetry != null && lastTelemetry.cccv != null && lastTelemetry.cccv.profile != null)
+                ? lastTelemetry.cccv.profile.fastCutoff : true;
+        swFastCutoff.setText("Clean Fast Cutoff at Ceiling (Save EEPROM)");
+        swFastCutoff.setTextColor(Color.parseColor("#34D399"));
+        swFastCutoff.setChecked(isFastCutoff);
+        swFastCutoff.setPadding(0, 10, 0, 10);
+        swFastCutoff.setOnCheckedChangeListener((bv, isChecked) -> {
+            if (lastTelemetry != null && lastTelemetry.cccv != null && lastTelemetry.cccv.profile != null) {
+                lastTelemetry.cccv.profile.fastCutoff = isChecked;
+                client.sendCccvProfile(lastTelemetry.cccv.profile);
+            }
+        });
+        layout.addView(swFastCutoff);
+
+        // Ramp Mode toggle (Linear vs Step)
+        Switch swSmoothLinear = new Switch(context);
+        boolean isSmooth = (lastTelemetry != null && lastTelemetry.cccv != null && lastTelemetry.cccv.profile != null)
+                ? lastTelemetry.cccv.profile.smoothLinear : false;
+        swSmoothLinear.setText("Smooth Linear Ramp (Off = Discrete Steps)");
+        swSmoothLinear.setTextColor(Color.WHITE);
+        swSmoothLinear.setChecked(isSmooth);
+        swSmoothLinear.setPadding(0, 10, 0, 10);
+        swSmoothLinear.setOnCheckedChangeListener((bv, isChecked) -> {
+            if (lastTelemetry != null && lastTelemetry.cccv != null && lastTelemetry.cccv.profile != null) {
+                lastTelemetry.cccv.profile.smoothLinear = isChecked;
+                client.sendCccvProfile(lastTelemetry.cccv.profile);
+            }
+        });
+        layout.addView(swSmoothLinear);
+
+        ScrollView sc = new ScrollView(context);
+        sc.addView(layout);
+        builder.setView(sc);
+        builder.setPositiveButton("Close", (d, w) -> d.dismiss());
+        builder.show();
     }
 
     private void updateFaultPill(TextView pill, boolean isFault) {

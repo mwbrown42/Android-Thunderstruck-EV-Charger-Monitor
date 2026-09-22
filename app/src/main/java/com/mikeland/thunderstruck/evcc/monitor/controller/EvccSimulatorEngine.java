@@ -157,9 +157,9 @@ public class EvccSimulatorEngine {
                 telemetry.state = "FAULT";
                 telemetry.j1772 = "LOCKED";
                 telemetry.charger1.voltage = 135.0f; telemetry.charger1.current = 0.0f;
-                telemetry.charger1.temperature = 61.5f; telemetry.charger1.active = false; telemetry.charger1.overtemp = true;
+                telemetry.charger1.temperature = 86.5f; telemetry.charger1.active = false; telemetry.charger1.overtemp = true;
                 telemetry.charger2.voltage = 135.0f; telemetry.charger2.current = 0.0f;
-                telemetry.charger2.temperature = 62.0f; telemetry.charger2.active = false; telemetry.charger2.overtemp = true;
+                telemetry.charger2.temperature = 87.0f; telemetry.charger2.active = false; telemetry.charger2.overtemp = true;
                 break;
 
             case CAN_RXERR:
@@ -179,8 +179,13 @@ public class EvccSimulatorEngine {
                 break;
 
             case STANDBY:
+            default:
                 telemetry.state = "STANDBY";
-                telemetry.j1772 = "DISCONNECTED";
+                telemetry.j1772 = "CONNECTED";
+                telemetry.charger1.voltage = 0.0f; telemetry.charger1.current = 0.0f;
+                telemetry.charger1.temperature = 24.0f; telemetry.charger1.active = false;
+                telemetry.charger2.voltage = 0.0f; telemetry.charger2.current = 0.0f;
+                telemetry.charger2.temperature = 24.0f; telemetry.charger2.active = false;
                 break;
         }
 
@@ -190,7 +195,6 @@ public class EvccSimulatorEngine {
         }
 
         updateSimulatedGovernor();
-
         if (listener != null) {
             listener.onTelemetryUpdate(telemetry);
         }
@@ -206,59 +210,102 @@ public class EvccSimulatorEngine {
     }
 
     private void updateSimulatedGovernor() {
+        int activeChargerCount = Math.max(1, telemetry.getActiveChargerCount());
+        float basePerCharger = maxc / (float) activeChargerCount;
+
         if (!telemetry.governor.enabled) {
             telemetry.governor.isDerated = false;
             telemetry.governor.baselineMaxc = maxc;
             telemetry.governor.activeMaxc = maxc;
             telemetry.governor.deratePercent = 100;
             telemetry.governor.statusText = "Disabled";
+            for (int i = 0; i < 4; i++) {
+                telemetry.governor.chargers[i].isDerated = false;
+                telemetry.governor.chargers[i].scale = 1.0f;
+                telemetry.governor.chargers[i].targetAmps = basePerCharger;
+                telemetry.governor.chargers[i].statusText = "Disabled";
+            }
             return;
         }
 
         float maxT = 0.0f;
         String hottest = "tsm2500";
+        float minAllowedScale = 1.0f;
+        int limitingIdx = -1;
+
+        // Calculate individual governor scale for each charger:
+        // Ceiling: 85°C hard trip.
+        // <= 65°C: 100%
+        // 66-72°C: 85%
+        // 73-77°C: 70%
+        // 78-81°C: 50%
+        // 82-84°C: 30%
+        // >= 85°C: Hard Trip (0A)
         for (int i = 0; i < 4; i++) {
             ChargerTelemetry c = telemetry.getCharger(i);
-            if (c != null && (c.active || c.temperature > maxT)) {
-                if (c.temperature > maxT) {
-                    maxT = c.temperature;
-                    hottest = c.name;
-                }
+            float cTemp = (c != null) ? c.temperature : 0.0f;
+            if (cTemp > maxT) {
+                maxT = cTemp;
+                if (c != null) hottest = c.name;
+            }
+
+            float chScale = 1.0f;
+            String chStatus = "Optimal";
+            if (cTemp >= 85.0f) {
+                chScale = 0.0f;
+                chStatus = String.format(Locale.US, "HARD TRIP (>= 85°C Cutoff @ %.0f°C)", cTemp);
+            } else if (cTemp >= 82.0f) {
+                chScale = 0.30f;
+                chStatus = String.format(Locale.US, "Emergency Floor (30%% @ %.0f°C)", cTemp);
+            } else if (cTemp >= 78.0f) {
+                chScale = 0.50f;
+                chStatus = String.format(Locale.US, "Heavy Derate (50%% @ %.0f°C)", cTemp);
+            } else if (cTemp >= 73.0f) {
+                chScale = 0.70f;
+                chStatus = String.format(Locale.US, "Moderate Derate (70%% @ %.0f°C)", cTemp);
+            } else if (cTemp >= 66.0f) {
+                chScale = 0.85f;
+                chStatus = String.format(Locale.US, "Mild Derate (85%% @ %.0f°C)", cTemp);
+            } else {
+                chScale = 1.0f;
+                chStatus = String.format(Locale.US, "Optimal (%.0f°C)", cTemp);
+            }
+
+            telemetry.governor.chargers[i].temp = cTemp;
+            telemetry.governor.chargers[i].isDerated = (chScale < 0.99f);
+            telemetry.governor.chargers[i].scale = chScale;
+            telemetry.governor.chargers[i].targetAmps = basePerCharger * chScale;
+            telemetry.governor.chargers[i].statusText = chStatus;
+
+            boolean isActive = (c != null && (c.active || c.current > 0.5f || activeChargerCount <= 2));
+            if (isActive && chScale < minAllowedScale) {
+                minAllowedScale = chScale;
+                limitingIdx = i;
             }
         }
-        if (maxT == 0.0f) maxT = telemetry.charger1.temperature;
 
         telemetry.governor.peakTemp = maxT;
         telemetry.governor.hottestCharger = hottest;
         telemetry.governor.baselineMaxc = maxc;
 
-        // Thunderstruck EVCC trips charging hard at 60°C.
-        // Governor aggressively throttles between 50°C and 59°C to guarantee heatsink stays under 60°C.
-        if (maxT >= 60.0f) {
+        if (minAllowedScale <= 0.0f) {
             telemetry.governor.isDerated = true;
             telemetry.governor.deratePercent = 0;
             telemetry.governor.activeMaxc = 0.0f;
-            telemetry.governor.statusText = "HARD TRIP (>= 60°C Cutoff)";
-        } else if (maxT >= 57.0f) {
+            telemetry.governor.statusText = "HARD TRIP (>= 85°C Cutoff)";
+        } else if (minAllowedScale < 0.99f) {
             telemetry.governor.isDerated = true;
-            telemetry.governor.deratePercent = 40;
-            telemetry.governor.activeMaxc = Math.max(4.0f, maxc * 0.40f);
-            telemetry.governor.statusText = "Heavy Derate (57-59°C)";
-        } else if (maxT >= 54.0f) {
-            telemetry.governor.isDerated = true;
-            telemetry.governor.deratePercent = 70;
-            telemetry.governor.activeMaxc = Math.max(6.0f, maxc * 0.70f);
-            telemetry.governor.statusText = "Moderate Derate (54-56°C)";
-        } else if (maxT >= 50.0f) {
-            telemetry.governor.isDerated = true;
-            telemetry.governor.deratePercent = 85;
-            telemetry.governor.activeMaxc = Math.max(8.0f, maxc * 0.85f);
-            telemetry.governor.statusText = "Warning Derate (50-53°C)";
+            telemetry.governor.deratePercent = Math.round(minAllowedScale * 100);
+            telemetry.governor.activeMaxc = Math.max(5.0f, maxc * minAllowedScale);
+            String limitingName = (limitingIdx >= 0 && telemetry.getCharger(limitingIdx) != null) ?
+                    telemetry.getCharger(limitingIdx).name : hottest;
+            telemetry.governor.statusText = String.format(Locale.US, "Derated (%d%% throttled by %s @ %.0f°C)",
+                    telemetry.governor.deratePercent, limitingName, maxT);
         } else {
             telemetry.governor.isDerated = false;
             telemetry.governor.deratePercent = 100;
             telemetry.governor.activeMaxc = maxc;
-            telemetry.governor.statusText = "Optimal (<50°C)";
+            telemetry.governor.statusText = "Optimal (<65°C)";
         }
     }
 

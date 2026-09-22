@@ -15,6 +15,7 @@ public class EvccTelemetry {
     public ChargerTelemetry charger3 = new ChargerTelemetry(42, "tsm2500_42");
     public ChargerTelemetry charger4 = new ChargerTelemetry(43, "tsm2500_43");
     public ThermalGovernorTelemetry governor = new ThermalGovernorTelemetry();
+    public CccvGovernorTelemetry cccv = new CccvGovernorTelemetry();
     public float maxv = 0.0f;
     public float maxc = 0.0f;
     public long sessionSec = 0;
@@ -85,6 +86,9 @@ public class EvccTelemetry {
 
         JSONObject gov = json.optJSONObject("governor");
         if (gov != null) governor.updateFromJson(gov);
+
+        JSONObject cccvObj = json.optJSONObject("cccv");
+        if (cccvObj != null) cccv.updateFromJson(cccvObj);
     }
 
     public void reset() {
@@ -98,5 +102,6 @@ public class EvccTelemetry {
         this.charger3 = new ChargerTelemetry(42, "tsm2500_42");
         this.charger4 = new ChargerTelemetry(43, "tsm2500_43");
         this.governor = new ThermalGovernorTelemetry();
+        this.cccv = new CccvGovernorTelemetry();
     }
 }

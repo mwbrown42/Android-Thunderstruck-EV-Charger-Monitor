@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#000000"
-    android:padding="8dp">
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp">
 
     <!-- Top Status & Mode Bar -->
     <LinearLayout
@@ -16,8 +17,9 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="#111827"
-        android:padding="8dp"
-        android:layout_marginBottom="5dp">
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:layout_marginBottom="3dp">
 
         <TextView
             android:id="@+id/title_gateway_header"
@@ -86,6 +88,19 @@
             android:layout_height="wrap_content"
             android:text="🛡️ Gov: OPTIMAL"
             android:textColor="#10B981"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="#1F293D"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/badge_cccv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📉 CC/CV: BULK CC"
+            android:textColor="#C4B5FD"
             android:textSize="12sp"
             android:textStyle="bold"
             android:background="#1F293D"
@@ -236,7 +251,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:background="#111827"
-                    android:padding="10dp"
+                    android:padding="6dp"
                     android:layout_marginHorizontal="3dp">
 
                     <LinearLayout
@@ -297,13 +312,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c1_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -311,13 +326,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c1_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -325,13 +340,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c1_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -339,13 +354,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c1_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c1_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -353,12 +368,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c1_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c1_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            <TextView android:id="@+id/c1_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -367,7 +383,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="4dp">
                         <TextView android:id="@+id/c1_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c1_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c1_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
@@ -380,7 +396,7 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.ChargingChartView
                         android:id="@+id/c1_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp" />
+                        android:layout_height="144dp" />
                 </LinearLayout>
 
                 <!-- Charger 2 Card -->
@@ -391,7 +407,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:background="#111827"
-                    android:padding="10dp"
+                    android:padding="6dp"
                     android:layout_marginHorizontal="3dp">
 
                     <LinearLayout
@@ -452,13 +468,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c2_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -466,13 +482,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c2_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -480,13 +496,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c2_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -494,13 +510,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c2_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c2_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -508,12 +524,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c2_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c2_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            <TextView android:id="@+id/c2_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -522,7 +539,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="4dp">
                         <TextView android:id="@+id/c2_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c2_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c2_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
@@ -535,7 +552,7 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.ChargingChartView
                         android:id="@+id/c2_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp" />
+                        android:layout_height="144dp" />
                 </LinearLayout>
 
                 <!-- Charger 3 Card -->
@@ -546,7 +563,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:background="#111827"
-                    android:padding="10dp"
+                    android:padding="6dp"
                     android:layout_marginHorizontal="3dp"
                     android:visibility="gone">
 
@@ -608,13 +625,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c3_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c3_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -622,13 +639,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c3_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c3_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -636,13 +653,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c3_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c3_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -650,13 +667,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c3_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c3_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -664,12 +681,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c3_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c3_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            <TextView android:id="@+id/c3_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -678,7 +696,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="4dp">
                         <TextView android:id="@+id/c3_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c3_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c3_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
@@ -691,7 +709,7 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.ChargingChartView
                         android:id="@+id/c3_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp" />
+                        android:layout_height="144dp" />
                 </LinearLayout>
 
 
@@ -703,7 +721,7 @@
                     android:layout_weight="1"
                     android:orientation="vertical"
                     android:background="#111827"
-                    android:padding="10dp"
+                    android:padding="6dp"
                     android:layout_marginHorizontal="3dp"
                     android:visibility="gone">
 
@@ -765,13 +783,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c4_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c4_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -779,13 +797,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c4_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c4_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -793,13 +811,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c4_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c4_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -807,13 +825,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
-                            android:gravity="center"
-                            android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c4_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
+                            android:gravity="center" android:layout_marginEnd="2dp">
+                            <TextView android:id="@+id/c4_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -821,12 +839,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
+                            android:orientation="horizontal"
                             android:background="#1F293D"
-                            android:padding="4dp"
+                            android:paddingHorizontal="4dp"
+                            android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c4_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" />
-                            <TextView android:id="@+id/c4_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="14sp" android:textStyle="bold" />
+                            <TextView android:id="@+id/c4_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -835,7 +854,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="4dp">
                         <TextView android:id="@+id/c4_fault_rxerr" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="rxerr" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c4_fault_hwfail" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="hwfail" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
                         <TextView android:id="@+id/c4_fault_overtemp" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="overtemp" android:textSize="11sp" android:textColor="#64748B" android:background="#1E293B" android:gravity="center" android:padding="3dp" android:layout_marginEnd="3dp" />
@@ -848,9 +867,135 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.ChargingChartView
                         android:id="@+id/c4_chart"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp" />
+                        android:layout_height="144dp" />
                 </LinearLayout>
 
+            </LinearLayout>
+
+            <!-- CC/CV Dynamic Tapering & Saturation Governor Card -->
+            <LinearLayout
+                android:id="@+id/card_cccv_governor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#131D33"
+                android:padding="6dp"
+                android:layout_marginBottom="3dp">
+
+                <!-- Header Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:id="@+id/title_cccv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📉 CC/CV Saturation Governor (36S Tesla Profile)"
+                        android:textColor="#E0E7FF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/cccv_phase_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="BULK CC"
+                        android:textColor="#38BDF8"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:background="#1F293D"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:layout_marginEnd="6dp" />
+
+                    <Button
+                        android:id="@+id/btn_cccv_settings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="⚙️ Curve"
+                        android:textSize="11sp"
+                        android:textColor="#FFFFFF"
+                        android:background="#374151"
+                        android:paddingHorizontal="8dp" />
+                </LinearLayout>
+
+                <!-- Metrics Row: Pack V, Cell V, Target A, Active A -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="3dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="#1F293D"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="2dp"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PACK V" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                        <TextView android:id="@+id/cccv_val_vpack" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#38BDF8" android:textSize="12sp" android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="#1F293D"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="2dp"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="CELL V" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                        <TextView android:id="@+id/cccv_val_vcell" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.000 V/c" android:textColor="#A78BFA" android:textSize="12sp" android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="#1F293D"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="2dp"
+                        android:gravity="center"
+                        android:layout_marginEnd="3dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="LIMIT" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                        <TextView android:id="@+id/cccv_val_itarget" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="50.0 A" android:textColor="#34D399" android:textSize="12sp" android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:background="#1F293D"
+                        android:paddingHorizontal="4dp"
+                        android:paddingVertical="2dp"
+                        android:gravity="center">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ACTIVE" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                        <TextView android:id="@+id/cccv_val_iactive" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="12sp" android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Interactive Canvas Curve Chart -->
+                <com.mikeland.thunderstruck.evcc.monitor.view.CccvCurveChartView
+                    android:id="@+id/cccv_chart_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="126dp" />
             </LinearLayout>
 
             <!-- Simulator Presets & Controls Row -->
@@ -953,7 +1098,7 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.TemperatureChartView
                         android:id="@+id/chart_temperature"
                         android:layout_width="match_parent"
-                        android:layout_height="138dp" />
+                        android:layout_height="124dp" />
                 </LinearLayout>
 
                 <!-- Parameter Setters & Traces -->
