@@ -91,11 +91,11 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
 - **Built-in Interactive Simulator Engine**:
   - Integrated offline simulation engine with 8 realistic scenario presets:
     - **4 Chg**: Full 80A quad-charger session (4x 20A).
+    - **3 Chg**: 60A triple-charger session (3x 20A).
     - **2 Chg**: 40A dual-charger session (2x 20A).
     - **1 Chg**: 20A single-charger session.
     - **CV Taper**: Constant voltage current ramp-down.
     - **Overtemp**: Heatsink thermal ramp (>=85°C trip cutoff).
-    - **CAN Rxerr**: Simulated CAN bus communication fault.
     - **Volt Err**: Traction battery voltage fault.
     - **Standby**: Idle disconnected state.
   - Interactive voltage and current sliders for dynamic testing without vehicle hardware.

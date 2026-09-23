@@ -14,11 +14,11 @@ public class EvccSimulatorEngine {
 
     public enum Scenario {
         QUAD_CHARGE(0, "Quad (4 Chg)"),
-        DUAL_CHARGE(1, "Dual (2 Chg)"),
-        SINGLE_CHARGE(2, "Single (1 Chg)"),
-        TAPERING(3, "CV Taper"),
-        OVERTEMP_FAULT(4, "Overtemp (>=60°C)"),
-        CAN_RXERR(5, "CAN RxErr"),
+        TRIPLE_CHARGE(1, "Triple (3 Chg)"),
+        DUAL_CHARGE(2, "Dual (2 Chg)"),
+        SINGLE_CHARGE(3, "Single (1 Chg)"),
+        TAPERING(4, "CV Taper"),
+        OVERTEMP_FAULT(5, "Overtemp (>=60°C)"),
         VOLT_ERR(6, "Volt Err"),
         STANDBY(7, "Standby Mode");
 
@@ -128,6 +128,18 @@ public class EvccSimulatorEngine {
                 }
                 break;
 
+            case TRIPLE_CHARGE:
+                telemetry.state = "CHARGE";
+                telemetry.j1772 = "LOCKED";
+                for (int i = 0; i < 3; i++) {
+                    ChargerTelemetry c = telemetry.getCharger(i);
+                    c.voltage = 142.0f;
+                    c.current = 20.0f;
+                    c.temperature = 38.0f + (i * 1.5f);
+                    c.active = true;
+                }
+                break;
+
             case DUAL_CHARGE:
                 telemetry.state = "CHARGE";
                 telemetry.j1772 = "LOCKED";
@@ -160,15 +172,6 @@ public class EvccSimulatorEngine {
                 telemetry.charger1.temperature = 86.5f; telemetry.charger1.active = false; telemetry.charger1.overtemp = true;
                 telemetry.charger2.voltage = 135.0f; telemetry.charger2.current = 0.0f;
                 telemetry.charger2.temperature = 87.0f; telemetry.charger2.active = false; telemetry.charger2.overtemp = true;
-                break;
-
-            case CAN_RXERR:
-                telemetry.state = "FAULT";
-                telemetry.j1772 = "LOCKED";
-                telemetry.charger1.voltage = 120.0f; telemetry.charger1.current = 0.0f;
-                telemetry.charger1.temperature = 35.0f; telemetry.charger1.active = false; telemetry.charger1.rxerr = true;
-                telemetry.charger2.voltage = 120.0f; telemetry.charger2.current = 0.0f;
-                telemetry.charger2.temperature = 35.0f; telemetry.charger2.active = false; telemetry.charger2.rxerr = true;
                 break;
 
             case VOLT_ERR:
