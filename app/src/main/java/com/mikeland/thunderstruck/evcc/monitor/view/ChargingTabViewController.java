@@ -83,10 +83,7 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
     private View bannerThermalDerate;
     private TextView bannerDerateTitle, bannerDerateDesc;
     private Button btnDismissDerateBanner;
-    private TextView lblGovDetail;
-    private Switch switchGovernor;
     private boolean bannerDismissed = false;
-    private boolean isUpdatingGovernorSwitch = false;
 
     // CC/CV Dynamic Tapering Views
     private TextView badgeCccv;
@@ -172,8 +169,6 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
         bannerDerateTitle = rootView.findViewById(R.id.banner_derate_title);
         bannerDerateDesc = rootView.findViewById(R.id.banner_derate_desc);
         btnDismissDerateBanner = rootView.findViewById(R.id.btn_dismiss_derate_banner);
-        lblGovDetail = rootView.findViewById(R.id.lbl_governor_detail);
-        switchGovernor = rootView.findViewById(R.id.switch_governor);
 
         // 4 Chargers
         int[] cardIds = {R.id.card_charger1, R.id.card_charger2, R.id.card_charger3, R.id.card_charger4};
@@ -461,14 +456,6 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                         }
                         Toast.makeText(context, "Set max temp -> " + val + "°C", Toast.LENGTH_SHORT).show();
                     } catch (Exception ignored) {}
-                }
-            });
-        }
-
-        if (switchGovernor != null) {
-            switchGovernor.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (!isUpdatingGovernorSwitch) {
-                    client.sendGovernorToggle(isChecked);
                 }
             });
         }
@@ -830,21 +817,11 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
             }
         }
 
-        if (switchGovernor != null && switchGovernor.isChecked() != gov.enabled) {
-            isUpdatingGovernorSwitch = true;
-            switchGovernor.setChecked(gov.enabled);
-            isUpdatingGovernorSwitch = false;
-        }
-
         if (!gov.enabled) {
             if (badgeGovernor != null) {
                 badgeGovernor.setText("⚪ Gov: OFF");
                 badgeGovernor.setTextColor(Color.parseColor("#9CA3AF"));
                 badgeGovernor.setBackgroundColor(Color.parseColor("#1F293D"));
-            }
-            if (lblGovDetail != null) {
-                lblGovDetail.setText("Disabled | Manual Control");
-                lblGovDetail.setTextColor(Color.parseColor("#9CA3AF"));
             }
             if (bannerThermalDerate != null) bannerThermalDerate.setVisibility(View.GONE);
         } else if (gov.isDerated) {
@@ -853,28 +830,6 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                 badgeGovernor.setText(String.format(Locale.US, "⚠️ Gov: %d%%", gov.deratePercent));
                 badgeGovernor.setTextColor(isCritical ? Color.parseColor("#EF4444") : Color.parseColor("#F59E0B"));
                 badgeGovernor.setBackgroundColor(isCritical ? Color.parseColor("#450A0A") : Color.parseColor("#451A03"));
-            }
-            if (lblGovDetail != null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(String.format(Locale.US, "⚠️ %.1fA / %.1fA (%d%%) | Peak %s %.0f°C",
-                        gov.activeMaxc, gov.baselineMaxc, gov.deratePercent, gov.hottestCharger, gov.peakTemp));
-                if (gov.chargers != null) {
-                    sb.append(" (");
-                    boolean first = true;
-                    for (int i = 0; i < 4; i++) {
-                        if (gov.chargers[i] != null && gov.chargers[i].temp > 0) {
-                            if (!first) sb.append(", ");
-                            sb.append(String.format(Locale.US, "C%d: %.0f°C", i + 1, gov.chargers[i].temp));
-                            if (gov.chargers[i].isDerated) {
-                                sb.append(String.format(Locale.US, " [%d%%]", Math.round(gov.chargers[i].scale * 100)));
-                            }
-                            first = false;
-                        }
-                    }
-                    sb.append(")");
-                }
-                lblGovDetail.setText(sb.toString());
-                lblGovDetail.setTextColor(Color.parseColor("#F59E0B"));
             }
             if (bannerThermalDerate != null && !bannerDismissed) {
                 bannerThermalDerate.setVisibility(View.VISIBLE);
@@ -886,14 +841,9 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
             }
         } else {
             if (badgeGovernor != null) {
-                badgeGovernor.setText("🛡️ Gov: OPTIMAL");
+                badgeGovernor.setText("🌡️ Gov: OPTIMAL");
                 badgeGovernor.setTextColor(Color.parseColor("#10B981"));
                 badgeGovernor.setBackgroundColor(Color.parseColor("#1F293D"));
-            }
-            if (lblGovDetail != null) {
-                lblGovDetail.setText(String.format(Locale.US, "Active: %.1fA (100%%) | Peak %.0f°C (Optimal <65°C)",
-                        gov.baselineMaxc, gov.peakTemp));
-                lblGovDetail.setTextColor(Color.parseColor("#9CA3AF"));
             }
             if (bannerThermalDerate != null) bannerThermalDerate.setVisibility(View.GONE);
             bannerDismissed = false;

@@ -86,7 +86,7 @@
             android:id="@+id/badge_governor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🛡️ Gov: OPTIMAL"
+            android:text="🌡️ Gov: OPTIMAL"
             android:textColor="#10B981"
             android:textSize="12sp"
             android:textStyle="bold"
@@ -312,12 +312,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c1_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -326,12 +326,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c1_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -340,12 +340,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c1_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -354,12 +354,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c1_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c1_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -368,12 +368,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c1_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c1_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c1_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -468,12 +468,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c2_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -482,12 +482,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c2_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -496,12 +496,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c2_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -510,12 +510,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c2_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c2_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -524,12 +524,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c2_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c2_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c2_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -625,12 +625,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c3_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -639,12 +639,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c3_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -653,12 +653,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c3_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -667,12 +667,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c3_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c3_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -681,12 +681,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c3_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c3_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c3_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -783,12 +783,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_lbl_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOLTS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c4_val_v" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 V" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -797,12 +797,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_lbl_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMPS" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c4_val_a" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 A" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -811,12 +811,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_lbl_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="POWER" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c4_val_w" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 W" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -825,12 +825,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center" android:layout_marginEnd="2dp">
-                            <TextView android:id="@+id/c4_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_lbl_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ENERGY" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c4_val_wh" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0 Wh" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
 
@@ -839,12 +839,12 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="horizontal"
+                            android:orientation="vertical"
                             android:background="#1F293D"
                             android:paddingHorizontal="4dp"
                             android:paddingVertical="2dp"
                             android:gravity="center">
-                            <TextView android:id="@+id/c4_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp" android:layout_marginEnd="4dp" />
+                            <TextView android:id="@+id/c4_lbl_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TEMP" android:textColor="#9CA3AF" android:textSize="9sp"  />
                             <TextView android:id="@+id/c4_val_tmp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0 °C" android:textColor="#FFFFFF" android:textSize="13sp" android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -1010,7 +1010,7 @@
                 <LinearLayout
                     android:id="@+id/card_sim_presets"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.0"
                     android:orientation="vertical"
                     android:background="#18152B"
@@ -1078,7 +1078,7 @@
                 <LinearLayout
                     android:id="@+id/card_temp_chart"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.2"
                     android:orientation="vertical"
                     android:background="#0F172A"
@@ -1105,7 +1105,7 @@
                 <LinearLayout
                     android:id="@+id/card_params_traces"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1.0"
                     android:orientation="vertical"
                     android:background="#111827"
@@ -1165,46 +1165,6 @@
                         <TextView android:id="@+id/lbl_maxt_param" android:layout_width="60dp" android:layout_height="wrap_content" android:text="MaxT:" android:textColor="#9CA3AF" android:textSize="13sp" />
                         <EditText android:id="@+id/inp_maxt" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="75" android:textSize="13sp" android:textColor="#FFF" android:background="#090D16" android:padding="6dp" android:inputType="number" />
                         <Button android:id="@+id/btn_set_maxt" android:layout_width="56dp" android:layout_height="36dp" android:text="Set" android:textSize="12sp" android:background="#06B6D4" android:textColor="#000" android:layout_marginStart="6dp" />
-                    </LinearLayout>
-
-                    <!-- Auto Thermal Governor Setting Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="6dp"
-                        android:paddingTop="6dp">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/lbl_governor_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🌡️ Auto Governor"
-                                android:textColor="#E5E7EB"
-                                android:textSize="12sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:id="@+id/lbl_governor_detail"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Active: 20.0A (100%)"
-                                android:textColor="#9CA3AF"
-                                android:textSize="10sp" />
-                        </LinearLayout>
-
-                        <Switch
-                            android:id="@+id/switch_governor"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
