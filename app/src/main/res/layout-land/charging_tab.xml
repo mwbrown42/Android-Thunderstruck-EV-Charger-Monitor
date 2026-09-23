@@ -1010,7 +1010,7 @@
                 <LinearLayout
                     android:id="@+id/card_sim_presets"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.0"
                     android:orientation="vertical"
                     android:background="#18152B"
@@ -1078,7 +1078,7 @@
                 <LinearLayout
                     android:id="@+id/card_temp_chart"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.2"
                     android:orientation="vertical"
                     android:background="#0F172A"
@@ -1098,7 +1098,8 @@
                     <com.mikeland.thunderstruck.evcc.monitor.view.TemperatureChartView
                         android:id="@+id/chart_temperature"
                         android:layout_width="match_parent"
-                        android:layout_height="124dp" />
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <!-- Parameter Setters & Traces -->
