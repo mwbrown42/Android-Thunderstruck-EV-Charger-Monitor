@@ -116,8 +116,9 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
 
     // Parameters & Traces
     private Button btnTrCan, btnTrState, btnTrChg, btnTrOff;
-    private EditText inpMaxV, inpMaxC;
-    private Button btnSetMaxV, btnSetMaxC;
+    private EditText inpMaxV, inpMaxC, inpMaxT;
+    private Button btnSetMaxV, btnSetMaxC, btnSetMaxT;
+    public static final String PREF_EVCC_MAXT = "evcc_max_temp";
 
     // Terminal
     private ScrollView termScroll;
@@ -242,8 +243,15 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
         btnTrOff = rootView.findViewById(R.id.btn_trace_off);
         inpMaxV = rootView.findViewById(R.id.inp_maxv);
         inpMaxC = rootView.findViewById(R.id.inp_maxc);
+        inpMaxT = rootView.findViewById(R.id.inp_maxt);
         btnSetMaxV = rootView.findViewById(R.id.btn_set_maxv);
         btnSetMaxC = rootView.findViewById(R.id.btn_set_maxc);
+        btnSetMaxT = rootView.findViewById(R.id.btn_set_maxt);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (inpMaxT != null) {
+            inpMaxT.setText(prefs.getString(PREF_EVCC_MAXT, "75"));
+        }
 
         // Terminal
         termScroll = rootView.findViewById(R.id.term_scroll);
@@ -434,6 +442,24 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
                         client.sendParamSet("maxc", fVal);
                         PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREF_EVCC_MAXC, val).apply();
                         Toast.makeText(context, "Set maxc -> " + val + "A", Toast.LENGTH_SHORT).show();
+                    } catch (Exception ignored) {}
+                }
+            });
+        }
+
+        if (btnSetMaxT != null) {
+            btnSetMaxT.setOnClickListener(v -> {
+                if (inpMaxT == null) return;
+                String val = inpMaxT.getText().toString().trim();
+                if (!val.isEmpty()) {
+                    try {
+                        float fVal = Float.parseFloat(val);
+                        client.sendParamSet("maxt", fVal);
+                        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREF_EVCC_MAXT, val).apply();
+                        if (chartTemperature != null) {
+                            chartTemperature.setDerateKneeTemp(fVal);
+                        }
+                        Toast.makeText(context, "Set max temp -> " + val + "°C", Toast.LENGTH_SHORT).show();
                     } catch (Exception ignored) {}
                 }
             });
@@ -792,6 +818,17 @@ public class ChargingTabViewController implements EvccGatewayClient.EvccEventLis
 
     private void updateGovernorUI(ThermalGovernorTelemetry gov) {
         if (gov == null) return;
+
+        if (chartTemperature != null && gov.maxTemp > 0) {
+            chartTemperature.setDerateKneeTemp(gov.maxTemp);
+        }
+        if (gov.maxTemp > 0 && inpMaxT != null && !inpMaxT.hasFocus()) {
+            String tStr = String.format(Locale.US, "%.0f", gov.maxTemp);
+            if (!tStr.equals(inpMaxT.getText().toString())) {
+                inpMaxT.setText(tStr);
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString(PREF_EVCC_MAXT, tStr).apply();
+            }
+        }
 
         if (switchGovernor != null && switchGovernor.isChecked() != gov.enabled) {
             isUpdatingGovernorSwitch = true;

@@ -20,6 +20,7 @@ public class ThermalGovernorTelemetry {
     public float activeMaxc = 0.0f;
     public int deratePercent = 100;
     public float peakTemp = 0.0f;
+    public float maxTemp = 75.0f;
     public String hottestCharger = "";
     public String statusText = "Optimal";
     public final ChargerGovernorInfo[] chargers = new ChargerGovernorInfo[4];
@@ -39,6 +40,7 @@ public class ThermalGovernorTelemetry {
         this.activeMaxc = (float) json.optDouble("activeMaxc", this.activeMaxc);
         this.deratePercent = json.optInt("deratePercent", this.deratePercent);
         this.peakTemp = (float) json.optDouble("peakTemp", this.peakTemp);
+        this.maxTemp = (float) json.optDouble("maxTemp", this.maxTemp);
         this.hottestCharger = json.optString("hottestCharger", this.hottestCharger);
         this.statusText = json.optString("statusText", this.statusText);
 

@@ -119,6 +119,15 @@ public class TemperatureChartView extends View {
         invalidate();
     }
 
+    private float derateKneeTemp = 75.0f;
+
+    public void setDerateKneeTemp(float temp) {
+        if (temp >= 40.0f && temp <= 85.0f && this.derateKneeTemp != temp) {
+            this.derateKneeTemp = temp;
+            postInvalidate();
+        }
+    }
+
     public synchronized void addDataPoint(float c1Temp, float c2Temp) {
         addDataPoint(c1Temp, c2Temp, 0f, 0f);
     }
@@ -171,13 +180,13 @@ public class TemperatureChartView extends View {
             canvas.drawText(label, paddingLeft - 8f, y + 6f, textPaint);
         }
 
-        // Derate threshold line: 66°C (Active thermal governor derate)
-        float norm66 = (66.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
-        float y66 = paddingTop + chartH - (norm66 * chartH);
-        canvas.drawLine(paddingLeft, y66, paddingLeft + chartW, y66, warningLinePaint);
+        // Dynamic derate threshold line
+        float normDerate = (derateKneeTemp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);
+        float yDerate = paddingTop + chartH - (normDerate * chartH);
+        canvas.drawLine(paddingLeft, yDerate, paddingLeft + chartW, yDerate, warningLinePaint);
         textPaint.setColor(warningColor);
         textPaint.setTextAlign(Paint.Align.RIGHT);
-        canvas.drawText("66\u00B0 DERATE", paddingLeft + chartW - 6f, y66 - 4f, textPaint);
+        canvas.drawText(String.format(Locale.US, "%.0f\u00B0 DERATE", derateKneeTemp), paddingLeft + chartW - 6f, yDerate - 4f, textPaint);
 
         // Emergency trip line: 85°C (TSM2500 internal hardware shutdown threshold)
         float norm85 = (85.0f - MIN_TEMP) / (MAX_TEMP - MIN_TEMP);

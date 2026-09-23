@@ -69,13 +69,14 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
 - **Expanded Temperature History Chart**:
   - Dynamically utilizes 100% of available card height with zero bottom dead space.
   - Displays session temperature traces for each charger against hardware safety thresholds:
-    - **75°C Derate Knee** (amber dash line)
+    - **Dynamic Derate Knee** (amber dash line, updates dynamically based on user-configured `Max Temp`)
     - **85°C Emergency Trip Boundary** (red dash line — hard safety cutoff)
 
 - **v4.0 Intelligent Thermal Governor Integration**:
   - Real-time governor tracking with status pills (`🛡️ Gov: OPTIMAL`, `⚠️ Gov: DERATED`, `⚪ Gov: OFF`).
+  - **User-Adjustable Max Temp**: Change thermal derating knee on the fly via `MaxT` under Parameters & Traces.
   - **Independent Per-Charger Throttling**: Computes safe current allocations for each charger individually, avoiding throttling cooler units unnecessarily.
-  - Automatic recovery hysteresis floor (<= 71°C) with 90-second dwell stabilization timer.
+  - Automatic recovery hysteresis floor (`Knee - 4°C`) with 90-second dwell stabilization timer.
 
 - **Bidirectional EVCC Command Console**:
   - Full ASCII serial terminal connected directly to the EVCC at 9600 baud.
@@ -84,7 +85,7 @@ This app communicates seamlessly over Wi-Fi / Local Area Network with the **Thun
     - `CONFIG` (Active configuration parameters)
     - `HISTORY` (Past charge cycle records)
   - Toggle buttons for EVCC trace modes (`TR CAN`, `TR STATE`, `TR CHG`, `TR OFF`).
-  - Input field to adjust `maxv`, `maxc` (up to 80A), or send any arbitrary EVCC CLI command.
+  - Input fields to adjust `MaxV`, `MaxC` (up to 80A), `MaxT` (thermal throttling knee), or send any arbitrary EVCC CLI command.
   - Built-in session logging with copy-to-clipboard and export.
 
 - **Built-in Interactive Simulator Engine**:

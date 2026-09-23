@@ -1150,10 +1150,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="6dp">
                         <TextView android:id="@+id/lbl_maxc_param" android:layout_width="60dp" android:layout_height="wrap_content" android:text="MaxC:" android:textColor="#9CA3AF" android:textSize="13sp" />
                         <EditText android:id="@+id/inp_maxc" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="80.0" android:textSize="13sp" android:textColor="#FFF" android:background="#090D16" android:padding="6dp" android:inputType="numberDecimal" />
                         <Button android:id="@+id/btn_set_maxc" android:layout_width="56dp" android:layout_height="36dp" android:text="Set" android:textSize="12sp" android:background="#06B6D4" android:textColor="#000" android:layout_marginStart="6dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <TextView android:id="@+id/lbl_maxt_param" android:layout_width="60dp" android:layout_height="wrap_content" android:text="MaxT:" android:textColor="#9CA3AF" android:textSize="13sp" />
+                        <EditText android:id="@+id/inp_maxt" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:text="75" android:textSize="13sp" android:textColor="#FFF" android:background="#090D16" android:padding="6dp" android:inputType="number" />
+                        <Button android:id="@+id/btn_set_maxt" android:layout_width="56dp" android:layout_height="36dp" android:text="Set" android:textSize="12sp" android:background="#06B6D4" android:textColor="#000" android:layout_marginStart="6dp" />
                     </LinearLayout>
 
                     <!-- Auto Thermal Governor Setting Row -->
